@@ -1,0 +1,21 @@
+User:
+  type: object
+  required:
+    - id
+    - name
+    - states
+  properties:
+    id:
+      description: The unique identifier of the user
+      type: integer
+    name:
+      type: string
+    states:
+      type: object
+      required:
+        - hasBathroomPass
+      properties:
+        hasBathroomPass:
+          type: boolean
+    description:
+      type: string
