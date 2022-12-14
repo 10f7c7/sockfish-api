@@ -1,4 +1,4 @@
-const connect = require('./connect.js')
+const con = require('./connect.js')
 
 module.exports = {
   /**
@@ -23,7 +23,7 @@ module.exports = {
     // console.log(query);
     // console.log(dbr);
     let sql = `Select * FROM users WHERE id = ${options.userId}`;
-    var [returned] = await connect(sql);
+    var [returned] = await con.connect(sql);
     returned.states = JSON.parse(returned.states);
     console.log(returned);
 
@@ -89,12 +89,12 @@ module.exports = {
       console.log(options.user[option]);
       let sql = `UPDATE \`sockfish\`.\`users\` SET \`states\` = JSON_SET(\`states\` ,'$.${option}' , ${(options.user[option] === 'true')}) WHERE \`id\` = ${options.userId};`
       console.log(sql);
-      const post = await connect(sql)
+      const post = await con.connect(sql)
 
     });
 
     let sql = `Select * FROM users WHERE id = ${options.userId}`;
-    var [returned] = await connect(sql);
+    var [returned] = await con.connect(sql);
     returned.states = JSON.parse(returned.states);
 
 
