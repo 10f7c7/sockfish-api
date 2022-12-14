@@ -3,14 +3,14 @@ User:
   required:
     - id
     - name
-    - states
+    - attributes
   properties:
     id:
       description: The unique identifier of the user
       type: integer
     name:
       type: string
-    states:
+    attributes:
       type: object
       required:
         - hasBathroomPass

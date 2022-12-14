@@ -65,7 +65,7 @@ module.exports = {
 
     Object.keys(options.user).forEach( async (option) => {
       console.log(options.user[option]);
-      let sql = `UPDATE \`sockfish\`.\`users\` SET \`states\` = JSON_SET(\`states\` ,'$.${option}' , ${(options.user[option] === 'true')}) WHERE \`id\` = ${options.userId};`
+      let sql = `UPDATE \`sockfish\`.\`users\` SET \`attributes\` = JSON_SET(\`attributes\` ,'$.${option}' , ${(options.user[option] === 'true')}) WHERE \`id\` = ${options.userId};`
       console.log(sql);
       const post = await con.connect(sql)
 

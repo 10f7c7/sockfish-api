@@ -18,7 +18,7 @@ module.exports = {
                 resolve(result);
             })
         })
-        promise.states = JSON.parse(promise.states);
+        promise.attributes = JSON.parse(promise.attributes);
         return promise;
     }
 
