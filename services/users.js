@@ -2,31 +2,14 @@ const con = require('./connect.js')
 
 module.exports = {
   /**
-  * 
+  *
   * @param options.userId The unique identifier of the user 
 
   */
   getUserId: async (options) => {
 
-
-
-
-
-    // var dbr = '';
-
-    // var query = conn.query(sql, (err, results) => {
-    //   // dbr = results;
-    //   // return results
-    //   // console.log(results);
-    //   // console.log(dbr[0]);
-    // })
-    // console.log(query);
-    // console.log(dbr);
     let sql = `Select * FROM users WHERE id = ${options.userId}`;
-    var [returned] = await con.connect(sql);
-    returned.states = JSON.parse(returned.states);
-    console.log(returned);
-
+    var returned = await con.connect(sql);
 
     // Implement your business logic here...
     //
@@ -42,15 +25,15 @@ module.exports = {
     //
     // throw new Error('<Error message>'); // this will result in a 500
 
-    var data = {
-        "description": "<string>",
-        "id": options.userId,
-        "states": `{JSON.stringify(dbr)}`,
-        "name": "<string>",
-        "type": "<string>",
-        "options": options
-      },
-      status = 200;
+    // var data = {
+    //     "description": "<string>",
+    //     "id": options.userId,
+    //     "states": `{JSON.stringify(dbr)}`,
+    //     "name": "<string>",
+    //     "type": "<string>",
+    //     "options": options
+    //   };
+    var status = 200;
 
     return {
       status: status,
@@ -61,12 +44,7 @@ module.exports = {
   /**
   * 
   * @param options.userId The unique identifier of the user 
-  * @param options.user.description
-  * @param options.user.id requiredThe unique identifier of the user
-  * @param options.user.name required
-  * @param options.user.states required
-  * @param options.user.type required
-
+  * @param options.user
   */
   postUserId: async (options) => {
 
@@ -94,14 +72,12 @@ module.exports = {
     });
 
     let sql = `Select * FROM users WHERE id = ${options.userId}`;
-    var [returned] = await con.connect(sql);
-    returned.states = JSON.parse(returned.states);
+    var returned = await con.connect(sql);
 
-
-    var data = {
-      'options': options
-    },
-      status = 200;
+    // var data = {
+    //   'options': options
+    // };
+    var status = 200;
 
     return {
       status: status,

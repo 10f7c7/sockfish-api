@@ -13,11 +13,12 @@ module.exports = {
             console.log('Mysql Connected...');
         });
     
-        const promise = await new Promise((resolve, reject) => {
+        var [promise] = await new Promise((resolve, reject) => {
             conn.query(sql, (err, result) => {
                 resolve(result);
             })
         })
+        promise.states = JSON.parse(promise.states);
         return promise;
     }
 
