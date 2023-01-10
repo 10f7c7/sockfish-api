@@ -13,12 +13,23 @@ module.exports = {
             console.log('Mysql Connected...');
         });
     
-        var [promise] = await new Promise((resolve, reject) => {
+        var promise = await new Promise((resolve, reject) => {
             conn.query(sql, (err, result) => {
-                resolve(result);
+                if (sql.split(' ')[0] == 'Select' || sql.split(' ')[0] == 'SELECT')  {
+                    [result] = result;
+                    result.attributes = JSON.parse(result.attributes);
+                    result.HallPassLog = JSON.parse(result.HallPassLog);
+                    result.information = JSON.parse(result.information);
+                    resolve(result);
+                } else if (err)  {
+                    reject(err)
+                    // throw err;
+                }
+                else {
+                    resolve('processed.');
+                }
             })
         })
-        promise.attributes = JSON.parse(promise.attributes);
         return promise;
     }
 
