@@ -6,42 +6,43 @@ const express = require('express'),
     multer = require('multer'),
     upload = multer(),
     app = express(),
-
+    router = express.Router(),
     PORT = process.env.PORT || 3000,
     NODE_ENV = process.env.NODE_ENV || 'development';
 
 app.set('port', PORT);
 app.set('env', NODE_ENV);
 
-app.use(cors());
-app.use(log('tiny'));
+router.use(cors());
+router.use(log('tiny'));
 
 // parse application/json
-app.use(express.json());
+router.use(express.json());
 
 // parse raw text
-app.use(express.text());
+router.use(express.text());
 
 // parse application/x-www-form-urlencoded
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
+router.use(express.urlencoded({ extended: true }));
+router.use(cookieParser());
 
 // parse multipart/form-data
-app.use(upload.array()); 
-app.use(express.static('public'));
+router.use(upload.array());
+router.use(express.static('public'));
 
-app.use(cookieParser());
+router.use(cookieParser());
 
-require('./routes')(app);
+
+require('./routes')(router);
 
 // catch 404
-app.use((req, res, next) => {
+router.use((req, res, next) => {
     // log.error(`Error 404 on ${req.url}.`);
     res.status(404).send({ status: 404, error: 'Not found' });
 });
 
 // catch errors
-app.use((err, req, res, next) => {
+router.use((err, req, res, next) => {
     const status = err.status || 500;
     const msg = err.error || err.message;
     // log.error(`Error ${status} (${msg}) on ${req.method} ${req.url} with payload ${req.body}.`);
@@ -49,6 +50,8 @@ app.use((err, req, res, next) => {
 });
 
 module.exports = app;
+
+app.use('/api/v1', router);
 
 app.listen(PORT, () => {
     console.log(

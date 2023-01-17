@@ -1,4 +1,5 @@
-const con = require('./connect.js')
+const con = require('./connect.js');
+const email = require('./email.js');
 
 module.exports = {
   /**
@@ -10,6 +11,9 @@ module.exports = {
 
     let sql = `Select * FROM users WHERE id = ${options.userId}`;
     var returned = await con.connect(sql);
+
+    // var mail = await email.main();
+    // mail.catch(console.error);
 
     // Implement your business logic here...
     //
@@ -68,7 +72,7 @@ module.exports = {
       returnTime: ""
     }
 
-    var passTypes = ['bathroom', 'hall', 'nurse', 'water'];
+    var passTypes = ['bathroom', 'hall', 'nurse', 'water', 'office', 'media', 'ss', 'other'];
 
     Object.keys(options.user).forEach( async (option) => {
 
