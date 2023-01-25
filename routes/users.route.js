@@ -1,8 +1,18 @@
 const express = require('express');
 const users = require('../services/users');
+const { authJwt } = require("../middleware");
 const router = new express.Router();
- 
-router.get('/:userId', async (req, res, next) => {
+
+
+router.use(function(req, res, next) {
+  res.header(
+    "Access-Control-Allow-Headers",
+    "x-access-token, Origin, Content-Type, Accept"
+  );
+  next();
+});
+
+router.get('/:userId', [authJwt.verifyToken, authJwt.justReturn], async (req, res, next) => {
   let options = { 
     "userId": req.params.userId,
   };
