@@ -30,11 +30,8 @@ router.post('/login', async (req, res, next) => {
 });
 
 router.post('/signup', async (req, res, next) => {
-//   let options = {
-//     "username": req.params.username,
-//     "password"
-//   };
   let options = {};
+  
   options.auth = req.body;
 
   try {
