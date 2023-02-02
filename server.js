@@ -1,4 +1,6 @@
 const express = require('express'),
+    https = require('https'),
+    fs = require('fs'),
     cookieParser = require('cookie-parser'),
     log = require('morgan'),
     path = require('path'),
@@ -9,9 +11,17 @@ const express = require('express'),
     router = express.Router(),
     PORT = process.env.PORT || 3000,
     NODE_ENV = process.env.NODE_ENV || 'development';
+require('dotenv').config();
 
 app.set('port', PORT);
 app.set('env', NODE_ENV);
+
+var key = fs.readFileSync(process.env.ABS_SSLKEY_PATH);
+var cert = fs.readFileSync(process.env.ABS_SSLPEM_PATH);
+var options = {
+  key: key,
+  cert: cert
+};
 
 router.use(cors());
 router.use(log('tiny'));
@@ -53,7 +63,9 @@ module.exports = app;
 
 app.use('/api/v1', router);
 
-app.listen(PORT, () => {
+var server = https.createServer(options, app);
+
+server.listen(PORT, () => {
     console.log(
         `Express Server started on Port ${app.get(
             'port'
