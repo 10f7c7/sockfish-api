@@ -9,6 +9,7 @@ const express = require('express'),
     upload = multer(),
     app = express(),
     router = express.Router(),
+    errorHandler = require('errorhandler'),
     PORT = process.env.PORT || 3000,
     NODE_ENV = process.env.NODE_ENV || 'development';
 require('dotenv').config();
@@ -50,6 +51,16 @@ router.use((req, res, next) => {
     // log.error(`Error 404 on ${req.url}.`);
     res.status(404).send({ status: 404, error: 'Not found' });
 });
+
+
+if (process.env.NODE_ENV === "development") {
+    app.use(errorHandler({ dumpExceptions: true, showStack: true }))
+  };
+  
+  if (process.env.NODE_ENV === "production") {
+    app.use(errorHandler())
+  };
+
 
 // catch errors
 router.use((err, req, res, next) => {
