@@ -13,7 +13,7 @@ module.exports = {
 
         return {
         status: status,
-        data: returned
+        data: {message: returned}
         };
     },
     postLogIn: async(options) =>  {
