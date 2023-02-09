@@ -29,7 +29,7 @@ router.get('/:userId', [authJwt.verifyToken, authJwt.justReturn], async (req, re
   }
 });
 
-router.post('/:userId', async (req, res, next) => {
+router.post('/:userId', [authJwt.verifyToken, authJwt.justReturn], async (req, res, next) => {
   let options = {
     "userId": req.params.userId,
   };
@@ -47,7 +47,7 @@ router.post('/:userId', async (req, res, next) => {
   }
 });
 
-router.get('/:userId/hall_passes', async (req, res, next) => {
+router.get('/:userId/hall_passes', [authJwt.verifyToken, authJwt.justReturn], async (req, res, next) => {
   let options = {
     "userId": req.params.userId,
   };
@@ -64,7 +64,7 @@ router.get('/:userId/hall_passes', async (req, res, next) => {
   }
 });
 
-router.post('/:userId/hall_passes', async (req, res, next) => {
+router.post('/:userId/hall_passes', [authJwt.verifyToken, authJwt.justReturn], async (req, res, next) => {
   let options = {
     "userId": req.params.userId,
   };
