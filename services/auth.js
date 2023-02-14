@@ -19,6 +19,16 @@ module.exports = {
     postLogIn: async(options) =>  {
         let sql = `Select * FROM userauth WHERE username = '${options.auth.username}'`;
         var user = await con.connect(sql);
+        console.log(user);
+        if (!user)  {
+            return {
+                status: 401,
+                data: {
+                    accessToken: null,
+                    message: "Invalid Login!"
+                }
+            };
+        }
 
         var passwordIsValid = bcrypt.compareSync(
             options.auth.password,
@@ -29,7 +39,7 @@ module.exports = {
                 status: 401,
                 data: {
                     accessToken: null,
-                    message: "Invalid Password!"
+                    message: "Invalid Login!"
                 }
             };
         }
