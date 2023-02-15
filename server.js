@@ -17,14 +17,15 @@ require('dotenv').config();
 app.set('port', PORT);
 app.set('env', NODE_ENV);
 
-var key = fs.readFileSync(process.env.ABS_SSLKEY_PATH);
-var cert = fs.readFileSync(process.env.ABS_SSLPEM_PATH);
-var options = {
-  key: key,
-  cert: cert
-};
+// var key = fs.readFileSync(process.env.ABS_SSLKEY_PATH, 'utf8');
+// var cert = fs.readFileSync(process.env.ABS_SSLPEM_PATH, 'utf8');
+// var options = {
+//   key: key,
+//   cert: cert
+//   ca: [fs.readFileSync('ssl/root.pem', 'utf8'), fs.readFileSync('ssl/intermediate.pem', 'utf8')]
+// };
 
-router.use(cors());
+app.use(cors());
 router.use(log('tiny'));
 
 // parse application/json
@@ -74,9 +75,9 @@ module.exports = app;
 
 app.use('/api/v1', router);
 
-var server = https.createServer(options, app);
+// var server = https.createServer(options, app);
 
-server.listen(PORT, () => {
+app.listen(PORT, () => {
     console.log(
         `Express Server started on Port ${app.get(
             'port'
