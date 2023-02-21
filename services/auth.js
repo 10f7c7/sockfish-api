@@ -19,7 +19,6 @@ module.exports = {
     postLogIn: async(options) =>  {
         let sql = `Select * FROM userauth WHERE username = '${options.auth.username}'`;
         var user = await con.connect(sql);
-        console.log(user);
         if (!user)  {
             return {
                 status: 401,

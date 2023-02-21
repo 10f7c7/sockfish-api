@@ -47,6 +47,24 @@ router.post('/:userId', [authJwt.verifyToken, authJwt.justReturn], async (req, r
   }
 });
 
+router.get('/:userId/current_course', [authJwt.verifyToken, authJwt.justReturn], async (req, res, next) => {
+  let options = {
+    "userId": req.params.userId,
+  };
+
+
+  try {
+    const result = await users.getUserIdCurrentCourse(options);
+    res.status(result.status || 200).send(result.data);
+  }
+  catch (err) {
+    return res.status(500).send({
+      error: err || 'Something went wrong.'
+    });
+  }
+});
+
+
 router.get('/:userId/hall_passes', [authJwt.verifyToken, authJwt.justReturn], async (req, res, next) => {
   let options = {
     "userId": req.params.userId,
