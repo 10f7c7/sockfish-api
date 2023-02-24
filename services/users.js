@@ -151,13 +151,23 @@ module.exports = {
     });
 
     let sql = `Select * FROM users WHERE id = ${options.userId}`;
-    var returned = await con.connect(sql);
+    // var returned = await con.connect(sql);
+    var returned = await con.connect(['SELECT', 'users', '*', 'id', options.userId]);
     var data = returned['information']['courses'][current_course-1];
     if (!current_course)  {
-      data = {
-        "courseName": "No Class",
-        "courseTeacher": "No Class",
-        "courseRoom": "No Class"
+      if (CURRENT_TIME < schedule[0][0])  {
+        data = {
+        "courseName": "Before Class",
+        "courseTeacher": "Before Class",
+        "courseRoom": "Before Class"
+      }
+      }
+      if (CURRENT_TIME > schedule[5][1])  {
+        data = {
+          "courseName": "After Class",
+          "courseTeacher": "After Class",
+          "courseRoom": "After Class"
+        }
       }
     }
 
@@ -186,7 +196,8 @@ module.exports = {
     //
     // throw new Error('<Error message>'); // this will result in a 500
     let sql = `Select * FROM users WHERE id = ${options.userId}`;
-    var returned = await con.connect(sql);
+    // var returned = await con.connect(sql);
+    var returned = await con.connect(["select", "users", "*", "id", options.userId]);
 
     var status = 200;
 
@@ -206,7 +217,8 @@ module.exports = {
   * @param options.userId The unique identifier of the user
   * @param options.HallPasses.action required
   * @param options.HallPasses.passType required
-  * @param options.HallPasses.exitRoom required
+  * @param options.HallPasses.originRoom required
+  * @param options.HallPasses.destRoom required
 
   */
   postUserIdHallPasses: async (options) => {
@@ -225,27 +237,25 @@ module.exports = {
     //
     // throw new Error('<Error message>'); // this will result in a 500
     // UPDATE `sockfish`.`users` SET `HallPassLog` = JSON_SET(`HallPassLog`, '$[0].returnTime', 'hehe') WHERE `id` = 14314
-    let cmd = `Select * FROM users WHERE id = ${options.userId}`;
-    var optionsCheck = await con.connect(cmd);
+    var optionsCheck = await con.connect(["select", "users", "*", "id", options.userId]);
     if (options.HallPasses.action == "startPass" && optionsCheck.attributes.hasHallPass == false)  {
-      let sql = `UPDATE \`sockfish\`.\`users\` SET \`HallPassLog\` = JSON_ARRAY_INSERT(\`HallPassLog\`, '$[0]', JSON_OBJECT('type', '${options.HallPasses.passType}', 'exitTime', '${new Date().toISOString()}', 'returnTime', '', 'exitRoom', '${options.HallPasses.exitRoom}')) WHERE \`id\` = ${options.userId};`;
-      console.log(sql);
-      let returned = await con.connect(sql);
-      let sql2 = ` UPDATE \`sockfish\`.\`users\` SET \`attributes\` = JSON_SET(\`attributes\` ,'$.hasHallPass' , true) WHERE \`id\` = ${options.userId};`;
-      let returned2 = await con.connect(sql2);
-      console.log(returned);
+
+      data = {
+        type: options.HallPasses.passType,
+        exitTime: new Date().toISOString(),
+        returnTime: "",
+        originRoom: options.HallPasses.originRoom
+      };
+
+      await con.connect(["update", "users", "HallPassLog", "id", options.userId], `JSON_ARRAY_INSERT(\`HallPassLog\`, '$[0]', JSON_OBJECT('type', '${options.HallPasses.passType}', 'exitTime', '${new Date().toISOString()}', 'returnTime', '', 'originRoom', '${options.HallPasses.originRoom}', 'destRoom', '${options.HallPasses.destRoom}'))`);
+      await con.connect(["update", "users", "attributes", "id", options.userId], `JSON_SET(\`attributes\` ,'$.hasHallPass' , true)`);
     }
     if (options.HallPasses.action == "endPass" && optionsCheck.attributes.hasHallPass == true)  {
-      let sql = ` UPDATE \`sockfish\`.\`users\` SET \`HallPassLog\` = JSON_SET(\`HallPassLog\`, '$[0].returnTime', '${new Date().toISOString()}') WHERE \`id\` = ${options.userId};`;
-      let returned = await con.connect(sql);
-      let sql2 = ` UPDATE \`sockfish\`.\`users\` SET \`attributes\` = JSON_SET(\`attributes\` ,'$.hasHallPass' , false) WHERE \`id\` = ${options.userId};`;
-      let returned2 = await con.connect(sql2);
+      await con.connect(["update", "users", "HallPassLog", "id", options.userId], `JSON_SET(\`HallPassLog\`, '$[0].returnTime', '${new Date().toISOString()}')`);
+      await con.connect(["update", "users", "attributes", "id", options.userId], `JSON_SET(\`attributes\` ,'$.hasHallPass' , false)`);
     }
-    let sql = `Select * FROM users WHERE id = ${options.userId}`;
-    var returned = await con.connect(sql);
+    var returned = await con.connect(["select", "users", "*", "id", options.userId]);
     var status = 200;
-    var data = {};
-      // status = '200';
 
     return {
       status: status,

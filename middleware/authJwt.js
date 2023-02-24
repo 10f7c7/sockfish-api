@@ -9,17 +9,22 @@ verifyToken = (req, res, next) => {
         message: "No token provided!"
       });
     }
-  
+
     jwt.verify(token, config.secret, (err, decoded) => {
+      if (err) {
+        if (err.name == "TokenExpiredError") {
+          return res.status(401).send({
+            message: "Token Expired!"
+          });
+        }
+        return res.status(401).send({
+          message: "Unauthorized!"
+        });
+      }
       if (req.params.userId != decoded.id)  {
         return res.status(401).send({
             message: "Wrong User!"
           });
-      }
-      if (err) {
-        return res.status(401).send({
-          message: "Unauthorized!"
-        });
       }
       req.userId = decoded.id;
       next();
