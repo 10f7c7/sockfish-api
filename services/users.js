@@ -16,7 +16,7 @@ module.exports = {
     var returned = await con.connect(['SELECT', 'users', '*', 'id', options.userId]);
 
 
-    const dbr = await db.users.findOne({where: {id: options.userId}});
+    const dbr = await db.users.findOne({ where: { id: options.userId } });
     console.log(dbr.dataValues);
 
     // var mail = await email.main();
@@ -81,9 +81,9 @@ module.exports = {
 
     var passTypes = ['bathroom', 'hall', 'nurse', 'water', 'office', 'media', 'ss', 'other'];
 
-    Object.keys(options.user).forEach( async (option) => {
+    Object.keys(options.user).forEach(async (option) => {
 
-      if (passTypes.includes(options.passType))  {
+      if (passTypes.includes(options.passType)) {
         let hpo = new hallPassObject;
         hpo.type = options.passType;
       }
@@ -112,7 +112,7 @@ module.exports = {
     return {
       status: status,
       data: returned
-    };  
+    };
   },
 
   /**
@@ -150,8 +150,8 @@ module.exports = {
     const schedule = [[new Date('7:25:100'), new Date('8:15:100'), 1], [new Date('8:20:100'), new Date('9:10:100'), 2], [new Date('9:15:100'), new Date('10:10:100'), 3], [new Date('10:15:100'), new Date('12:15:100'), 4], [new Date('12:20:100'), new Date('1:10:100 PM'), 5], [new Date('1:15:100 PM'), new Date('2:10:100 PM'), 6]];
     var current_course;
     schedule.forEach((helm) => {
-      if (helm[0] <= CURRENT_TIME && helm[1] > CURRENT_TIME)  {
-        if (!current_course)  {
+      if (helm[0] <= CURRENT_TIME && helm[1] > CURRENT_TIME) {
+        if (!current_course) {
           current_course = helm[2];
         }
       }
@@ -160,16 +160,16 @@ module.exports = {
     let sql = `Select * FROM users WHERE id = ${options.userId}`;
     // var returned = await con.connect(sql);
     var returned = await con.connect(['SELECT', 'users', '*', 'id', options.userId]);
-    var data = returned['information']['courses'][current_course-1];
-    if (!current_course)  {
-      if (CURRENT_TIME < schedule[0][0])  {
+    var data = returned['information']['courses'][current_course - 1];
+    if (!current_course) {
+      if (CURRENT_TIME < schedule[0][0]) {
         data = {
-        "courseName": "Before Class",
-        "courseTeacher": "Before Class",
-        "courseRoom": "Before Class"
+          "courseName": "Before Class",
+          "courseTeacher": "Before Class",
+          "courseRoom": "Before Class"
+        }
       }
-      }
-      if (CURRENT_TIME > schedule[5][1])  {
+      if (CURRENT_TIME > schedule[5][1]) {
         data = {
           "courseName": "After Class",
           "courseTeacher": "After Class",
@@ -209,10 +209,10 @@ module.exports = {
     var status = 200;
 
     var data = [{
-        "exitTime": "<date-time>",
-        "returnTime": "<date-time>",
-        "type": "<string>",
-      }];
+      "exitTime": "<date-time>",
+      "returnTime": "<date-time>",
+      "type": "<string>",
+    }];
 
     return {
       status: status,
@@ -244,7 +244,7 @@ module.exports = {
     // throw new Error('<Error message>'); // this will result in a 500
     // UPDATE `sockfish`.`users` SET `HallPassLog` = JSON_SET(`HallPassLog`, '$[0].returnTime', 'hehe') WHERE `id` = 14314
     var optionsCheck = await con.connect(["select", "users", "*", "id", options.userId]);
-    if (options.HallPasses.action == "startPass" && optionsCheck.attributes.hasHallPass == false)  {
+    if (options.HallPasses.action == "startPass" && optionsCheck.attributes.hasHallPass == false) {
 
       data = {
         type: options.HallPasses.type,
@@ -256,7 +256,7 @@ module.exports = {
       await con.connect(["update", "users", "HallPassLog", "id", options.userId], `JSON_ARRAY_INSERT(\`HallPassLog\`, '$[0]', JSON_OBJECT('type', '${options.HallPasses.type}', 'exitTime', '${new Date().toISOString().toLocaleString('en-US', { timeZone: 'America/New_York' })}', 'returnTime', '', 'destRoom', '${options.HallPasses.destRoom}', 'originRoom', '${options.HallPasses.originRoom}'))`);
       await con.connect(["update", "users", "attributes", "id", options.userId], `JSON_SET(\`attributes\` ,'$.hasHallPass' , true)`);
     }
-    if (options.HallPasses.action == "endPass" && optionsCheck.attributes.hasHallPass == true)  {
+    if (options.HallPasses.action == "endPass" && optionsCheck.attributes.hasHallPass == true) {
       await con.connect(["update", "users", "HallPassLog", "id", options.userId], `JSON_SET(\`HallPassLog\`, '$[0].returnTime', '${new Date().toISOString().toLocaleString('en-US', { timeZone: 'America/New_York' })}')`);
       await con.connect(["update", "users", "attributes", "id", options.userId], `JSON_SET(\`attributes\` ,'$.hasHallPass' , false)`);
     }

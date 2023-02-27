@@ -6,21 +6,21 @@ var bcrypt = require("bcryptjs");
 
 
 module.exports = {
-    postSignUp: async(options) =>  {
+    postSignUp: async (options) => {
         let sql = `INSERT INTO userauth (username,password) VALUES ('${options.auth.username}','${bcrypt.hashSync(options.auth.password, 8)}');`;
         var returned = await con.connect(sql);
         var status = 200;
 
         return {
-        status: status,
-        data: {message: returned}
+            status: status,
+            data: { message: returned }
         };
     },
-    postLogIn: async(options) =>  {
+    postLogIn: async (options) => {
         let sql = `Select * FROM userauth WHERE username = '${options.auth.username}'`;
         // var user = await con.connect(sql);
         var user = await con.connect(['SELECT', 'userauth', '*', 'username', options.auth.username]);
-        if (!user)  {
+        if (!user) {
             return {
                 status: 401,
                 data: {
@@ -48,13 +48,13 @@ module.exports = {
         });
 
         return {
-        status: 200,
-        data: {
-            id: user.id,
-            username: user.username,
-            email: user.email,
-            accessToken: token
-        }
+            status: 200,
+            data: {
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                accessToken: token
+            }
         }
     }
 }

@@ -6,18 +6,18 @@ module.exports = (Sequelize, DataTypes) => {
             primaryKey: true
         },
         name: {
-        type: DataTypes.STRING,
-        allowNull: false
+            type: DataTypes.STRING,
+            allowNull: false
         },
         attributes: {
             type: DataTypes.JSON,
         }
     },
-    {
-        tableName: 'users',
-        updatedAt: false,
-        createdAt: false
-    }
+        {
+            tableName: 'users',
+            updatedAt: false,
+            createdAt: false
+        }
     );
     return User;
 }

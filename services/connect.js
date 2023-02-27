@@ -1,7 +1,7 @@
 const mysql = require('mysql')
 require('dotenv').config();
 
-function sqlBuilder([queryMode, table, collumn, where, userId, ], data = null)  {
+function sqlBuilder([queryMode, table, collumn, where, userId,], data = null) {
     var meta = {
         queryMode: "",
         table: "",
@@ -10,7 +10,7 @@ function sqlBuilder([queryMode, table, collumn, where, userId, ], data = null)  
         userId: "",
         data: data
     }
-    var sql = {sql: ""};
+    var sql = { sql: "" };
     switch (queryMode.toUpperCase()) {
         case 'UPDATE':
             meta.queryMode = "UPDATE";
@@ -60,7 +60,7 @@ function sqlBuilder([queryMode, table, collumn, where, userId, ], data = null)  
 
     if (typeof userId != 'string' && where == 'id') {
         throw new Error('Invalid userId');
-    } if (typeof userId != 'string' && where == 'username')  {
+    } if (typeof userId != 'string' && where == 'username') {
         throw new Error('Invalid username');
     }
     else {
@@ -98,7 +98,7 @@ function sqlBuilder([queryMode, table, collumn, where, userId, ], data = null)  
     }
     Object.freeze(meta);
 
-    console.log(meta.sql);
+    // console.log(meta.sql);
     return meta;
 }
 
@@ -109,7 +109,7 @@ function sqlBuilder([queryMode, table, collumn, where, userId, ], data = null)  
 module.exports = {
     connect: async ([queryMode, table, collumn, userId, where], data = null) => {
         const sql = sqlBuilder([queryMode, table, collumn, userId, where], data);
-        console.log(sql);
+        // console.log(sql);
 
 
         const conn = mysql.createConnection({
@@ -128,15 +128,15 @@ module.exports = {
         // }
         var dataType = await new Promise((resove, reject) => {
             conn.query(`select * from information_schema.columns Where \`TABLE_SCHEMA\` = "sockfish" and \`TABLE_NAME\` = "${sql.table}" and \`DATA_TYPE\` = "longtext";`, (err, result) => {
-                if (err)  {
+                if (err) {
                     reject(err);
                 }
                 var types = [];
-                if (!result.length)  {
+                if (!result.length) {
                     resove(types);
                     return;
                 }
-                for (let i = 0; i<result.length;i++)  {
+                for (let i = 0; i < result.length; i++) {
                     types.push(result[i].COLUMN_NAME);
                 }
                 resove(types);
@@ -144,17 +144,17 @@ module.exports = {
         })
         var promise = await new Promise((resolve, reject) => {
             conn.query(sql.sql, (err, result) => {
-                if (sql.sql.split(' ')[0] == 'Select' || sql.sql.split(' ')[0] == 'SELECT')  {
+                if (sql.sql.split(' ')[0] == 'Select' || sql.sql.split(' ')[0] == 'SELECT') {
                     [result] = result;
-                    if (!dataType.length)  {
+                    if (!dataType.length) {
                         resolve(result);
                         return;
                     }
-                    for (let i=0;i<dataType.length;i++)  {
+                    for (let i = 0; i < dataType.length; i++) {
                         result[dataType[i]] = JSON.parse(result[dataType[i]]);
                     }
                     resolve(result);
-                } else if (err)  {
+                } else if (err) {
                     reject(err)
                 }
                 else {
@@ -164,7 +164,7 @@ module.exports = {
         })
         return promise;
     },
-    legacy : async (sql) => {
+    legacy: async (sql) => {
         const conn = mysql.createConnection({
             host: process.env.MYSQL_URL,
             user: process.env.MYSQL_USERNAME,
@@ -176,22 +176,22 @@ module.exports = {
             console.log('Mysql Connected...');
         });
         var table = 'users';
-        if (sql.includes("userauth"))  {
+        if (sql.includes("userauth")) {
             table = 'userauth';
-        } else if (sql.includes("crisis"))  {
+        } else if (sql.includes("crisis")) {
             table = 'crisis';
         }
         var dataType = await new Promise((resove, reject) => {
             conn.query(`select * from information_schema.columns Where \`TABLE_SCHEMA\` = "sockfish" and \`TABLE_NAME\` = "${table}" and \`DATA_TYPE\` = "longtext";`, (err, result) => {
-                if (err)  {
+                if (err) {
                     reject(err);
                 }
                 var types = [];
-                if (!result.length)  {
+                if (!result.length) {
                     resove(types);
                     return;
                 }
-                for (let i = 0; i<result.length;i++)  {
+                for (let i = 0; i < result.length; i++) {
                     types.push(result[i].COLUMN_NAME);
                 }
                 resove(types);
@@ -199,20 +199,20 @@ module.exports = {
         })
         var promise = await new Promise((resolve, reject) => {
             conn.query(sql, (err, result) => {
-                if (table == 'crisis')  {
+                if (table == 'crisis') {
                     resolve(result);
                 }
-                if (sql.split(' ')[0] == 'Select' || sql.split(' ')[0] == 'SELECT')  {
+                if (sql.split(' ')[0] == 'Select' || sql.split(' ')[0] == 'SELECT') {
                     [result] = result;
-                    if (!dataType.length)  {
+                    if (!dataType.length) {
                         resolve(result);
                         return;
                     }
-                    for (let i=0;i<dataType.length;i++)  {
+                    for (let i = 0; i < dataType.length; i++) {
                         result[dataType[i]] = JSON.parse(result[dataType[i]]);
                     }
                     resolve(result);
-                } else if (err)  {
+                } else if (err) {
                     reject(err)
                 }
                 else {
