@@ -11,6 +11,11 @@ verifyToken = (req, res, next) => {
     }
 
     jwt.verify(token, config.secret, (err, decoded) => {
+      if (req.baseUrl == '/v1/crisis')  {
+        req.userId = decoded.id;
+        next();
+        return;
+      }
       if (err) {
         if (err.name == "TokenExpiredError") {
           return res.status(401).send({

@@ -9,8 +9,10 @@ module.exports = {
   */
   getUserId: async (options) => {
 
-    let sql = `Select * FROM users WHERE id = ${options.userId}`;
-    var returned = await con.connect(sql);
+    // let sql = `Select * FROM users WHERE id = ${options.userId}`;
+    // var returned = await con.connect(sql);
+
+    var returned = await con.connect(['SELECT', 'users', '*', 'id', options.userId]);
 
     // var mail = await email.main();
     // mail.catch(console.error);
