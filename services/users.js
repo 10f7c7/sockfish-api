@@ -220,7 +220,7 @@ module.exports = {
   * @param options.HallPasses.action required
   * @param options.HallPasses.type required
   * @param options.HallPasses.destRoom required
-
+  * @param options.HallPasses.originRoom required
   */
   postUserIdHallPasses: async (options) => {
 
@@ -248,7 +248,7 @@ module.exports = {
         destRoom: options.HallPasses.destRoom
       };
 
-      await con.connect(["update", "users", "HallPassLog", "id", options.userId], `JSON_ARRAY_INSERT(\`HallPassLog\`, '$[0]', JSON_OBJECT('type', '${options.HallPasses.type}', 'exitTime', '${new Date().toISOString().toLocaleString('en-US', { timeZone: 'America/New_York' })}', 'returnTime', '', 'destRoom', '${options.HallPasses.destRoom}'))`);
+      await con.connect(["update", "users", "HallPassLog", "id", options.userId], `JSON_ARRAY_INSERT(\`HallPassLog\`, '$[0]', JSON_OBJECT('type', '${options.HallPasses.type}', 'exitTime', '${new Date().toISOString().toLocaleString('en-US', { timeZone: 'America/New_York' })}', 'returnTime', '', 'destRoom', '${options.HallPasses.destRoom}', 'originRoom', '${options.HallPasses.originRoom}'))`);
       await con.connect(["update", "users", "attributes", "id", options.userId], `JSON_SET(\`attributes\` ,'$.hasHallPass' , true)`);
     }
     if (options.HallPasses.action == "endPass" && optionsCheck.attributes.hasHallPass == true)  {

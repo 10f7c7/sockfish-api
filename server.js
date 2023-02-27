@@ -73,7 +73,7 @@ router.use((err, req, res, next) => {
 
 module.exports = app;
 
-app.use('/v1', router);
+app.use('/api/v1', router);
 
 // var server = https.createServer(options, app);
 
