@@ -68,7 +68,7 @@ module.exports = {
 
     var hallPassObject = {
       type: "",
-      exitTime: new Date().toISOString(),
+      exitTime: new Date().toISOString().toLocaleString('en-US', { timeZone: 'America/New_York' }),
       returnTime: ""
     }
 
@@ -216,8 +216,7 @@ module.exports = {
   *
   * @param options.userId The unique identifier of the user
   * @param options.HallPasses.action required
-  * @param options.HallPasses.passType required
-  * @param options.HallPasses.originRoom required
+  * @param options.HallPasses.type required
   * @param options.HallPasses.destRoom required
 
   */
@@ -241,17 +240,17 @@ module.exports = {
     if (options.HallPasses.action == "startPass" && optionsCheck.attributes.hasHallPass == false)  {
 
       data = {
-        type: options.HallPasses.passType,
-        exitTime: new Date().toISOString(),
+        type: options.HallPasses.type,
+        exitTime: new Date().toISOString().toLocaleString('en-US', { timeZone: 'America/New_York' }),
         returnTime: "",
-        originRoom: options.HallPasses.originRoom
+        destRoom: options.HallPasses.destRoom
       };
 
-      await con.connect(["update", "users", "HallPassLog", "id", options.userId], `JSON_ARRAY_INSERT(\`HallPassLog\`, '$[0]', JSON_OBJECT('type', '${options.HallPasses.passType}', 'exitTime', '${new Date().toISOString()}', 'returnTime', '', 'originRoom', '${options.HallPasses.originRoom}', 'destRoom', '${options.HallPasses.destRoom}'))`);
+      await con.connect(["update", "users", "HallPassLog", "id", options.userId], `JSON_ARRAY_INSERT(\`HallPassLog\`, '$[0]', JSON_OBJECT('type', '${options.HallPasses.type}', 'exitTime', '${new Date().toISOString().toLocaleString('en-US', { timeZone: 'America/New_York' })}', 'returnTime', '', 'destRoom', '${options.HallPasses.destRoom}'))`);
       await con.connect(["update", "users", "attributes", "id", options.userId], `JSON_SET(\`attributes\` ,'$.hasHallPass' , true)`);
     }
     if (options.HallPasses.action == "endPass" && optionsCheck.attributes.hasHallPass == true)  {
-      await con.connect(["update", "users", "HallPassLog", "id", options.userId], `JSON_SET(\`HallPassLog\`, '$[0].returnTime', '${new Date().toISOString()}')`);
+      await con.connect(["update", "users", "HallPassLog", "id", options.userId], `JSON_SET(\`HallPassLog\`, '$[0].returnTime', '${new Date().toISOString().toLocaleString('en-US', { timeZone: 'America/New_York' })}')`);
       await con.connect(["update", "users", "attributes", "id", options.userId], `JSON_SET(\`attributes\` ,'$.hasHallPass' , false)`);
     }
     var returned = await con.connect(["select", "users", "*", "id", options.userId]);
