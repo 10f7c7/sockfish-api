@@ -1,4 +1,5 @@
-const con = require('./connect.js');
+const db = require('../models/index.js');
+
 
 
 module.exports = {
@@ -13,42 +14,40 @@ module.exports = {
   * @param options.crisisItem.urgency required
   * @param options.crisisItem.userId requiredThe unique identifier of the user
   * @param options.crisisItem.action
-  * @param options.crisisItem.crisisId
-
   */
 
-
   createCrisis: async (options) => {
+    options.crisisItem.userId = options.crisisItem.userId || 0
     if (options.crisisItem.action == 'startCrisis') {
-      var optionsCheck = await con.connect(["select", "users", "*", "id", options.crisisItem.userId]);
-      if (!optionsCheck.attributes.isInCrisis) {
-        let sql = `INSERT INTO crisis (description,gps,location,needs,resolved,urgency,userId) VALUES ('${options.crisisItem.description}','${options.crisisItem.gps}','${options.crisisItem.location}','${options.crisisItem.needs}','${options.crisisItem.resolved}','${options.crisisItem.urgency}','${options.crisisItem.userId}');`;
-        var returned = await con.legacy(sql);
-        var status = 200;
-        await con.connect(["update", "users", "attributes", "id", options.crisisItem.userId], `JSON_SET(\`attributes\` ,'$.isInCrisis' , true)`);
-        return {
-        status: status,
-        data: {message: returned}
-        };
-      } else {
-        return {
-          status: 400,
-          data: {message: "Crisis has already been recorded"}
-        };
+      if (options.crisisItem.userId) {
+        var optionsCheck = await db.Sequelize.query(`SELECT * FROM users WHERE id = ${options.crisisItem.userId}`);
+        if (optionsCheck.attributes.isInCrisis && options.crisisItem.userId) {return {status: 400,data: {message: "Crisis has already been recorded"}}};
       }
+      const newCrisis = await db.crisis.create({
+        description: options.crisisItem.description,
+        gps: options.crisisItem.gps,
+        location: options.crisisItem.location,
+        needs: options.crisisItem.needs,
+        resolved: options.crisisItem.resolved,
+        urgency: options.crisisItem.urgency,
+        userId: options.crisisItem.userId
+      });
+      if (options.crisisItem.userId) await db.Sequelize.query(`UPDATE users SET attributes = JSON_SET(\`attributes\` ,'$.isInCrisis' , true) WHERE id = ${options.crisisItem.userId}`);
+      var status = 200;
+      return {
+      status: status,
+      data: newCrisis
+      };
 
     }
     if (options.crisisItem.action == 'endCrisis') {
-      let sql = `UPDATE crisis SET resolved = '1' WHERE crisisId = ${options.crisisItem.crisisId};`;
-      await con.connect(["update", "users", "attributes", "id", options.crisisItem.userId], `JSON_SET(\`attributes\` ,'$.isInCrisis' , false)`);
-      console.log(sql);
-
-      var returned = await con.legacy(sql);
+      const endCrisis = await db.crisis.update({ resolved: 1 }, { where: { crisisId: options.crisisItem.crisisId }});
+      if (options.crisisItem.userId) await db.Sequelize.query(`UPDATE users SET attributes = JSON_SET(\`attributes\` ,'$.isInCrisis' , false) WHERE id = ${options.crisisItem.userId}`);
       var status = 200;
 
       return {
       status: status,
-      data: {message: returned}
+      data: {message: "Crisis has been resolved"}
       };
     }
   },
@@ -60,14 +59,11 @@ module.exports = {
   */
   getCrises: async (options) => {
     if (options.getResolved == 'true') {
-      let sql = `Select * FROM crisis WHERE resolved = 1`;
-      var returned = await con.legacy(sql);
+      var returned = await db.crisis.findAll({ raw: true, where: { resolved: 1 }});
     } else if (options.getAll == 'true') {
-      let sql = `Select * FROM crisis`;
-      var returned = await con.legacy(sql);
+      var returned = await db.crisis.findAll({ raw: true });
     } else {
-      let sql = `Select * FROM crisis WHERE resolved = 0`;
-      var returned = await con.legacy(sql);
+      var returned = await db.crisis.findAll({ raw: true, where: { resolved: 0 }});
     }
 
     let status = 200;
@@ -86,14 +82,11 @@ module.exports = {
   */
   getCrisesById: async (options) => {
     if (options.getResolved == 'true') {
-      let sql = `Select * FROM crisis WHERE resolved = 1 AND userId = ${options.userId}`;
-      var returned = await con.legacy(sql);
+      var returned = await db.crisis.findAll({ raw: true, where: { resolved: 1, userId: options.userId }});
     } else if (options.getAll == 'true') {
-      let sql = `Select * FROM crisis WHERE userId = ${options.userId}`;
-      var returned = await con.legacy(sql);
+      var returned = await db.crisis.findAll({ raw: true, where: { userId: options.userId }});
     } else {
-      let sql = `Select * FROM crisis WHERE resolved = 0 AND userId = ${options.userId}`;
-      var returned = await con.legacy(sql);
+      var returned = await db.crisis.findAll({ raw: true, where: { resolved: 0, userId: options.userId }});
     }
 
     let status = 200;

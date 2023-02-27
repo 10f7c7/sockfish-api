@@ -1,28 +1,37 @@
-const Sequelize = require('sequelize');
+const { Sequelize, DataTypes } = require('sequelize');
 require('dotenv').config();
+const path = require('path');
 
 // initialize database connection
+const db = {};
 var sequelize = new Sequelize(process.env.MYSQL_DATABASE, process.env.MYSQL_USERNAME, process.env.MYSQL_PASSWORD, {
-host: process.env.MYSQL_URL,
-dialect: 'mysql',
+    host: process.env.MYSQL_URL,
+    dialect: 'mysql',
 
-pool: {
-    max: 5,
-    min: 0,
-    idle: 10000
-}
+    pool: {
+        max: 5,
+        min: 0,
+        idle: 10000
+    }
 });
 
 // load models
 var models = [
-'users',
-'userAuth',
+    'users.model',
+    'crisis.model',
 ];
-models.forEach(function(model) {
-module.exports[model] = sequelize.import(__dirname + '/' + model);
+models.forEach(function (file) {
+    const model = require(path.join(__dirname, file))(sequelize, DataTypes)
+    db[model.name] = model;
 });
 
+Object.keys(db).forEach((modelName) => {
+    if (db[modelName].associate) {
+        db[modelName].associate(db);
+    }
+});
 
+db.sequelize = sequelize;
+db.Sequelize = Sequelize;
 
-// export connection
-module.exports.sequelize = sequelize;
+module.exports = db;

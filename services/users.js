@@ -1,5 +1,6 @@
 const con = require('./connect.js');
 const email = require('./email.js');
+const db = require('../models/index.js');
 
 module.exports = {
   /**
@@ -13,6 +14,10 @@ module.exports = {
     // var returned = await con.connect(sql);
 
     var returned = await con.connect(['SELECT', 'users', '*', 'id', options.userId]);
+
+
+    const dbr = await db.users.findOne({where: {id: options.userId}});
+    console.log(dbr.dataValues);
 
     // var mail = await email.main();
     // mail.catch(console.error);
@@ -138,7 +143,7 @@ module.exports = {
     ////////////////////////////////////////////////////
 
 
-    var CURRENT_TIME = new Date();
+    var CURRENT_TIME = new Date().toLocaleString('en-US', { timeZone: 'America/New_York' });
     CURRENT_TIME.setMonth(0);
     CURRENT_TIME.setFullYear(100);
     CURRENT_TIME.setDate(1);

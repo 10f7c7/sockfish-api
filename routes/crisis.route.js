@@ -2,8 +2,8 @@ const express = require('express');
 const crisis = require('../services/crisis');
 const { authJwt } = require("../middleware");
 const router = new express.Router();
- 
-router.post('/create_crisis', [authJwt.verifyToken, authJwt.justReturn], async (req, res, next) => {
+
+router.post('/create_crisis', async (req, res, next) => {
   let options = {
   };
 
@@ -20,8 +20,8 @@ router.post('/create_crisis', [authJwt.verifyToken, authJwt.justReturn], async (
   }
 });
  
-router.get('/get_crises', [authJwt.verifyToken, authJwt.justReturn], async (req, res, next) => {
-  let options = { 
+router.get('/get_crises', async (req, res, next) => {
+  let options = {
     "getResolved": req.query.getResolved,
     "getAll": req.query.getAll
   };
@@ -38,7 +38,7 @@ router.get('/get_crises', [authJwt.verifyToken, authJwt.justReturn], async (req,
   }
 });
  
-router.get('/get_crises/users/:userId', [authJwt.verifyToken, authJwt.justReturn], async (req, res, next) => {
+router.get('/get_crises/users/:userId', async (req, res, next) => {
   let options = { 
     "userId": req.params.userId,
     "getResolved": req.query.getResolved,
