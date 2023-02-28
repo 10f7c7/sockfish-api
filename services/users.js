@@ -143,13 +143,12 @@ module.exports = {
     ////////////////////////////////////////////////////
 
 
-    var CURRENT_TIME = new Date().toLocaleString('en-US', { timeZone: 'America/New_York' });
-    CURRENT_TIME.setMonth(0);
-    CURRENT_TIME.setFullYear(100);
-    CURRENT_TIME.setDate(1);
-    const schedule = [[new Date('7:25:100'), new Date('8:15:100'), 1], [new Date('8:20:100'), new Date('9:10:100'), 2], [new Date('9:15:100'), new Date('10:10:100'), 3], [new Date('10:15:100'), new Date('12:15:100'), 4], [new Date('12:20:100'), new Date('1:10:100 PM'), 5], [new Date('1:15:100 PM'), new Date('2:10:100 PM'), 6]];
+    var CURRENT_TIME = new Number(new Date().getTime().toLocaleString('en-US', { timeZone: 'America/New_York' }).replaceAll(",",""));
+    const schedule = [[new Date().setHours(7,25,0), new Date().setHours(8,15,0), 1], [new Date().setHours(8,20,0), new Date().setHours(9,10,0), 2], [new Date().setHours(9,15,0), new Date().setHours(10,10,0), 3], [new Date().setHours(10,15,0), new Date().setHours(12,15,0), 4], [new Date().setHours(12,20,0), new Date().setHours(13,10,0), 5], [new Date().setHours(13,15,0), new Date().setHours(14,10,0), 6]];
     var current_course;
     schedule.forEach((helm) => {
+      console.log(helm[0]);
+      console.log(CURRENT_TIME);
       if (helm[0] <= CURRENT_TIME && helm[1] > CURRENT_TIME) {
         if (!current_course) {
           current_course = helm[2];
@@ -158,8 +157,10 @@ module.exports = {
     });
 
     let sql = `Select * FROM users WHERE id = ${options.userId}`;
-    // var returned = await con.connect(sql);
-    var returned = await con.connect(['SELECT', 'users', '*', 'id', options.userId]);
+
+    var returned = await con.legacy(sql);
+    // console.log(returned);
+    // var returned = await con.connect(['SELECT', 'users', '*', 'id', options.userId]);
     var data = returned['information']['courses'][current_course - 1];
     if (!current_course) {
       if (CURRENT_TIME < schedule[0][0]) {
