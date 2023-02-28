@@ -10,22 +10,23 @@ const express = require('express'),
     app = express(),
     router = express.Router(),
     errorHandler = require('errorhandler'),
+    YAML = require('yaml'),
+    swaggerUi = require('swagger-ui-express'),
     PORT = process.env.PORT || 3000,
     NODE_ENV = process.env.NODE_ENV || 'development';
 require('dotenv').config();
-
 app.set('port', PORT);
 app.set('env', NODE_ENV);
 
-// var key = fs.readFileSync(process.env.ABS_SSLKEY_PATH, 'utf8');
-// var cert = fs.readFileSync(process.env.ABS_SSLPEM_PATH, 'utf8');
-// var options = {
-//   key: key,
-//   cert: cert
-//   ca: [fs.readFileSync('ssl/root.pem', 'utf8'), fs.readFileSync('ssl/intermediate.pem', 'utf8')]
-// };
+ var options = {
+   key: fs.readFileSync(path.join(__dirname, process.env.ABS_SSLKEY_PATH)),
+   cert: fs.readFileSync(path.join(__dirname, process.env.ABS_SSLCERT_PATH)),
+   ca: fs.readFileSync(path.join(__dirname, process.env.ABS_SSLCA_PATH))
+};
+const swaggerDocument = YAML.parse(fs.readFileSync('./docs/index.yaml', 'utf8'))
 
 app.use(cors());
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 router.use(log('tiny'));
 
 // parse application/json
@@ -75,9 +76,9 @@ module.exports = app;
 
 app.use('/api/v1', router);
 
-// var server = https.createServer(options, app);
+var server = https.createServer(options, app);
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(
         `Express Server started on Port ${app.get(
             'port'
