@@ -20,8 +20,8 @@ module.exports = {
         options.crisisItem.userId = options.crisisItem.userId || 0
         if (options.crisisItem.action == 'startCrisis') {
             if (options.crisisItem.userId) {
-                var optionsCheck = await db.Sequelize.query(`SELECT * FROM users WHERE id = ${options.crisisItem.userId}`);
-                if (optionsCheck.attributes.isInCrisis && options.crisisItem.userId) { return { status: 400, data: { message: "Crisis has already been recorded" } } };
+                var optionsCheck = await db.sequelize.query(`SELECT * FROM users WHERE id = ${options.crisisItem.userId}`);
+                if (JSON.parse(optionsCheck[0][0].attributes).isInCrisis && options.crisisItem.userId) { return { status: 400, data: { message: "Crisis has already been recorded" } } };
             }
             const newCrisis = await db.crisis.create({
                 description: options.crisisItem.description,
@@ -32,7 +32,7 @@ module.exports = {
                 urgency: options.crisisItem.urgency,
                 userId: options.crisisItem.userId
             });
-            if (options.crisisItem.userId) await db.Sequelize.query(`UPDATE users SET attributes = JSON_SET(\`attributes\` ,'$.isInCrisis' , true) WHERE id = ${options.crisisItem.userId}`);
+            if (options.crisisItem.userId) await db.sequelize.query(`UPDATE users SET attributes = JSON_SET(\`attributes\` ,'$.isInCrisis' , true) WHERE id = ${options.crisisItem.userId}`);
             var status = 200;
             return {
                 status: status,
@@ -42,7 +42,7 @@ module.exports = {
         }
         if (options.crisisItem.action == 'endCrisis') {
             const endCrisis = await db.crisis.update({ resolved: 1 }, { where: { crisisId: options.crisisItem.crisisId } });
-            if (options.crisisItem.userId) await db.Sequelize.query(`UPDATE users SET attributes = JSON_SET(\`attributes\` ,'$.isInCrisis' , false) WHERE id = ${options.crisisItem.userId}`);
+            if (options.crisisItem.userId) await db.sequelize.query(`UPDATE users SET attributes = JSON_SET(\`attributes\` ,'$.isInCrisis' , false) WHERE id = ${options.crisisItem.userId}`);
             var status = 200;
 
             return {

@@ -4,7 +4,7 @@ info:
     title: Sockfish
     description: Sockfish
 servers:
-    - url: https://api.10f7c7.dev/api/v1
+    - url: https://api.10f7c7.dev:3000/api/v1
 paths:
     /users/{userId}:
         parameters:
@@ -229,8 +229,6 @@ paths:
                     application/json:
                         schema:
                             $ref: "#/components/schemas/Error"
-        security:
-            - ApiKey: []
     /crisis/get_crises/users/{userId}:
       parameters:
         - name: userId
@@ -280,8 +278,6 @@ paths:
                     application/json:
                         schema:
                             $ref: "#/components/schemas/Error"
-        security:
-            - ApiKey: []
     /crisis/create_crisis:
       post:
         summary: creates a crisis entry
@@ -320,8 +316,6 @@ paths:
                             properties:
                                 message:
                                     type: string
-        security:
-            - ApiKey: []
     /auth/login:
         post:
             summary: creates a new JWT token
