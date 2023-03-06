@@ -14,6 +14,7 @@ const express = require('express'),
     swaggerUi = require('swagger-ui-express'),
     PORT = process.env.PORT || 3000,
     NODE_ENV = process.env.NODE_ENV || 'development';
+const { updateCounselorAvailability } = require('./background/updateCounselorAvailability.js');
 require('dotenv').config();
 app.set('port', PORT);
 app.set('env', NODE_ENV);
@@ -85,3 +86,5 @@ server.listen(PORT, () => {
         )} | Environment : ${app.get('env')}`
     );
 });
+
+updateCounselorAvailability();

@@ -316,6 +316,163 @@ paths:
                             properties:
                                 message:
                                     type: string
+    /counselor/create_appointement:
+      post:
+        summary: creates an appointment
+        operationId: createAppointment
+        x-operation-name: create-appointment
+        tags:
+          - counselor
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Appointment"
+                properties:
+                  isWalkIn:
+                    type: boolean
+        responses:
+                "200":
+                    description: Successfully created a new JWT token
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Appointment"
+                "400":
+                    description: Invalid request
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+    /counselor/get_occupied:
+      get:
+        parameters:
+          - name: time
+            description: get only resolved crises
+            in: query
+            schema:
+              properties:
+                status:
+                  type: string
+                  format: date-time
+                  default: false
+          - name: counselorId
+            description: get crises
+            in: query
+            schema:
+              properties:
+                status:
+                  type: integer
+                  default: false
+        summary: gets occupied counselors
+        operationId: getOccupied
+        x-operation-name: get-occupied
+        tags:
+          - counselor
+        responses:
+          "200":
+              description: Successfully created a new JWT token
+              content:
+                  application/json:
+                    schema:
+                      type: array
+                      items:
+                        $ref: "#/components/schemas/Appointment"
+          "400":
+              description: Invalid request
+              content:
+                  application/json:
+                      schema:
+                          type: object
+                          properties:
+                              message:
+                                  type: string
+    /counselor/get_counselor/{counselorId}:
+      get:
+        parameters:
+          - name: counselorId
+            in: path
+            required: true # lies is false
+            schema:
+              type: integer
+          - name: isAvailable
+            in: query
+            schema:
+              properties:
+                status:
+                  type: boolean
+                  # format: date-time
+                  default: false
+        summary: gets all counselors
+        operationId: getCounselors
+        x-operation-name: get-counselors
+        tags:
+          - counselor
+        responses:
+          "200":
+              description: Successfully created a new JWT token
+              content:
+                  application/json:
+                    schema:
+                      type: array
+                      items:
+                        $ref: "#/components/schemas/Counselor"
+          "400":
+              description: Invalid request
+              content:
+                  application/json:
+                      schema:
+                          type: object
+                          properties:
+                              message:
+                                  type: string
+    /counselor/toggle_walkin:
+      post:
+        summary: gets all counselors
+        operationId: toggleWalkin
+        x-operation-name: toggle-walkin
+        tags:
+          - counselor
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - action
+                  - counselorId
+                properties:
+                  action:
+                    type: string
+                    enum:
+                      - startWalkin
+                      - endWalkin
+                  counselorId:
+                    type: integer
+        responses:
+          "200":
+              description: Successfully created a new JWT token
+              content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/Counselor"
+          "400":
+              description: Invalid request
+              content:
+                  application/json:
+                      schema:
+                          type: object
+                          properties:
+                              message:
+                                  type: string
+        
+    
     /auth/login:
         post:
             summary: creates a new JWT token
@@ -528,6 +685,47 @@ components:
             crisisId:
               type: integer
               readOnly: true
+        Appointment:
+          type: object
+          required:
+            - counselorId
+            - startTime
+            - date
+            - reason
+            - userId
+          properties:
+            counselorId:
+              type: integer
+            startTime:
+              type: string
+              format: full-time
+            endTime:
+              type: string
+              format: full-time
+              nullable: true
+            date:
+              type: string
+              format:  date
+            reason:
+              type: string
+            userId:
+              $ref: "#/components/schemas/UserId"
+        Counselor:
+          type: object
+          required:
+            - counselorId
+            - name
+            - available
+            - walkInAvailable
+          properties:
+            counselorId:
+              type: integer
+            name:
+              type: string
+            available:
+              type: boolean
+            walkInAvailable:
+              type: boolean
         Error:
             type: object
             required:

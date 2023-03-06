@@ -19,6 +19,9 @@ var sequelize = new Sequelize(process.env.MYSQL_DATABASE, process.env.MYSQL_USER
 var models = [
     'users.model',
     'crisis.model',
+    'hallpasslog.model',
+    'counselors.model',
+    'appointments.model'
 ];
 models.forEach(function (file) {
     const model = require(path.join(__dirname, file))(sequelize, DataTypes)

@@ -142,13 +142,13 @@ module.exports = {
     // Create dyname schedule that gets from database //
     ////////////////////////////////////////////////////
 
-    var CURRENT_TIME = new Date(new Date().getTime() + 3 * 60 * 60 * 1000);
+    var CURRENT_TIME = new Date().toLocaleTimeString('it-US', {timeZone: "America/New_York"});
     const schedule = [[new Date().setHours(7,25,0), new Date().setHours(8,15,0), 1], [new Date().setHours(8,20,0), new Date().setHours(9,10,0), 2], [new Date().setHours(9,15,0), new Date().setHours(10,10,0), 3], [new Date().setHours(10,15,0), new Date().setHours(12,15,0), 4], [new Date().setHours(12,20,0), new Date().setHours(13,10,0), 5], [new Date().setHours(13,15,0), new Date().setHours(14,10,0), 6]];
     var current_course;
     schedule.forEach((helm) => {
       console.log(helm[0]);
       console.log(CURRENT_TIME);
-      if (helm[0] <= CURRENT_TIME && helm[1] > CURRENT_TIME) {
+      if (helm[0] <= CURRENT_TIME && helm[1] >= CURRENT_TIME) {
         if (!current_course) {
           current_course = helm[2];
         }
@@ -168,12 +168,17 @@ module.exports = {
           "courseTeacher": "Before Class",
           "courseRoom": "Before Class"
         }
-      }
-      if (CURRENT_TIME > schedule[5][1]) {
+      } else if (CURRENT_TIME > schedule[5][1]) {
         data = {
           "courseName": "After Class",
           "courseTeacher": "After Class",
           "courseRoom": "After Class"
+        }
+      } else {
+        data = {
+          "courseName": "In Between Class",
+          "courseTeacher": "In Between Class",
+          "courseRoom": "In Between Class"
         }
       }
     }
@@ -186,6 +191,11 @@ module.exports = {
       data: data
     };
   },
+
+  /**
+  * @param options.userId The unique identifier of the user
+  *
+  */
 
   getUserIdHallPasses: async (options) => {
 
@@ -202,9 +212,17 @@ module.exports = {
     // you can throw it as follows:
     //
     // throw new Error('<Error message>'); // this will result in a 500
-    let sql = `Select * FROM users WHERE id = ${options.userId}`;
+    // let sql = `Select * FROM users WHERE id = ${options.userId}`;
     // var returned = await con.connect(sql);
-    var returned = await con.connect(["select", "users", "*", "id", options.userId]);
+    // var returned = await con.connect(["select", "users", "*", "id", options.userId]);
+
+    const twomp = await db.hallpasslog.findAll({
+      where: {
+        userId: options.userId
+      },
+      raw: true,
+      paranoid: false
+    });
 
     var status = 200;
 
@@ -216,7 +234,7 @@ module.exports = {
 
     return {
       status: status,
-      data: returned.HallPassLog
+      data: twomp
     };
   },
   /**
@@ -228,44 +246,39 @@ module.exports = {
   * @param options.HallPasses.originRoom required
   */
   postUserIdHallPasses: async (options) => {
-
-    // Implement your business logic here...
-    //
-    // Return all 2xx and 4xx as follows:
-    //
-    // return {
-    //   status: 'statusCode',
-    //   data: 'response'
-    // }
-    console.log(options.HallPasses);
-    // If an error happens during your business logic implementation,
-    // you can throw it as follows:
-    //
-    // throw new Error('<Error message>'); // this will result in a 500
     // UPDATE `sockfish`.`users` SET `HallPassLog` = JSON_SET(`HallPassLog`, '$[0].returnTime', 'hehe') WHERE `id` = 14314
-    var optionsCheck = await con.connect(["select", "users", "*", "id", options.userId]);
-    if (options.HallPasses.action == "startPass" && optionsCheck.attributes.hasHallPass == false) {
-
-      data = {
+    // var optionsCheck = await con.connect(["select", "users", "*", "id", options.userId]);
+    var optionsCheck = await db.sequelize.query(`SELECT * FROM users WHERE id = ${options.userId}`);
+    if (options.HallPasses.action == "startPass" && JSON.parse(optionsCheck[0][0].attributes).hasHallPass == false) {
+      const temp = await db.hallpasslog.create({
+        userId: options.userId,
         type: options.HallPasses.type,
-        exitTime: new Date().toISOString().toLocaleString('en-US', { timeZone: 'America/New_York' }),
-        returnTime: "",
-        destRoom: options.HallPasses.destRoom
-      };
-
-      await con.connect(["update", "users", "HallPassLog", "id", options.userId], `JSON_ARRAY_INSERT(\`HallPassLog\`, '$[0]', JSON_OBJECT('type', '${options.HallPasses.type}', 'exitTime', '${new Date().toISOString().toLocaleString('en-US', { timeZone: 'America/New_York' })}', 'returnTime', '', 'destRoom', '${options.HallPasses.destRoom}', 'originRoom', '${options.HallPasses.originRoom}'))`);
+        originRoom: options.HallPasses.originRoom,
+      });
+      // await con.connect(["update", "users", "HallPassLog", "id", options.userId], `JSON_ARRAY_INSERT(\`HallPassLog\`, '$[0]', JSON_OBJECT('type', '${options.HallPasses.type}', 'exitTime', '${new Date().toISOString().toLocaleString('en-US', { timeZone: 'America/New_York' })}', 'returnTime', '', 'destRoom', '${options.HallPasses.destRoom}', 'originRoom', '${options.HallPasses.originRoom}'))`);
       await con.connect(["update", "users", "attributes", "id", options.userId], `JSON_SET(\`attributes\` ,'$.hasHallPass' , true)`);
     }
-    if (options.HallPasses.action == "endPass" && optionsCheck.attributes.hasHallPass == true) {
-      await con.connect(["update", "users", "HallPassLog", "id", options.userId], `JSON_SET(\`HallPassLog\`, '$[0].returnTime', '${new Date().toISOString().toLocaleString('en-US', { timeZone: 'America/New_York' })}')`);
+    if (options.HallPasses.action == "endPass" && JSON.parse(optionsCheck[0][0].attributes).hasHallPass == true) {
+      const tomp = await db.hallpasslog.destroy({
+        where: {
+          userId: options.userId,
+          returnTime: null
+        }
+      });
+      // await con.connect(["update", "users", "HallPassLog", "id", options.userId], `JSON_SET(\`HallPassLog\`, '$[0].returnTime', '${new Date().toISOString().toLocaleString('en-US', { timeZone: 'America/New_York' })}')`);
       await con.connect(["update", "users", "attributes", "id", options.userId], `JSON_SET(\`attributes\` ,'$.hasHallPass' , false)`);
     }
-    var returned = await con.connect(["select", "users", "*", "id", options.userId]);
     var status = 200;
 
+    const twemp = await db.hallpasslog.findAll({
+      where: {
+        userId: options.userId
+      },
+      raw: true
+    });
     return {
       status: status,
-      data: returned.HallPassLog
+      data: JSON.stringify(twemp) != "[]" ? twemp[0] : new Object({message:'hallpass ended'})
     };
   },
 };
