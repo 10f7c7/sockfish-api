@@ -1,8 +1,10 @@
 const express = require('express');
 const counselor = require('../services/counselor');
 const router = new express.Router();
+const { authJwt } = require("../middleware");
+
  
-router.post('/create_appointement', async (req, res, next) => {
+router.post('/create_appointement', [authJwt.verifyToken, authJwt.justReturn], async (req, res, next) => {
   let options = { 
   };
 
@@ -73,7 +75,7 @@ router.get('/get_occupied', async (req, res, next) => {
   }
 });
 
-router.post('/toggle_walkin', async (req, res, next) => {
+router.post('/toggle_walkin', [authJwt.verifyToken, authJwt.justReturn], async (req, res, next) => {
   let options = {
   };
 
