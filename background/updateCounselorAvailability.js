@@ -9,7 +9,7 @@ async function updateCounselorAvailability()  {
     // var date = year + '-' + month + '-' + day;
     var date = moment.utc(new Date()).format('YYYY-MM-DD');
     // var startTime = new Date(new Date().getTime() /*+ 3 * 60 * 60 * 1000*/).toISOString().split('T')[1].replace('Z', '').split('.')[0];
-    var startTime = new Date().toISOString().split('T')[1].toLocaleTimeString('it-US', {timeZone: "America/New_York"});
+    var startTime = new Date().toLocaleTimeString('it-US', {timeZone: "America/New_York"});
     const counselors = await db.counselors.findAll({
         raw: true
     });
