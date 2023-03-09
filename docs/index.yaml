@@ -350,15 +350,15 @@ paths:
     /counselor/get_occupied:
       get:
         parameters:
-          # - name: time
-          #   description: get only resolved crises
-          #   in: query
-          #   schema:
-          #     properties:
-          #       status:
-          #         type: string
-          #         format: date-time
-          #         default: false
+          - name: date
+            description: get only resolved crises
+            in: query
+            schema:
+              properties:
+                status:
+                  type: string
+                  format: date
+                  default: false
           - name: counselorId
             description: get crises
             in: query
@@ -474,11 +474,126 @@ paths:
                                   type: string
         security:
                 - ApiKey: []
-    # /statistics/{userId}/mean    
-    # /statistics/{userId}/median    
-    # /statistics/{userId}/mode  
-    # /statistics/{userId}/range  
-    
+    /statistics/mode/urgancy:
+      get:
+        summary: gets a graph of mode of crises urgancy 
+        operationId: statisticsModeUrgancy
+        x-operation-name: statistics-mode-urgancy
+        tags:
+          - statistics
+        responses:
+          "200":
+            description: gets a graph of mode of crises urgancy 
+            content:
+                image/svg:
+                  schema:
+                    type: string
+                    format: binary
+          "400":
+              description: Invalid request
+              content:
+                  application/json:
+                      schema:
+                          type: object
+                          properties:
+                              message:
+                                  type: string
+    /statistics/mean/urgancy:
+      get:
+        summary: gets a graph of mean of crises urgancy 
+        operationId: statisticsMeanUrgancy
+        x-operation-name: statistics-mean-urgancy
+        tags:
+          - statistics
+        responses:
+          "200":
+            description: gets a graph of mean of crises urgancy 
+            content:
+                image/svg:
+                  schema:
+                    type: string
+                    format: binary
+          "400":
+              description: Invalid request
+              content:
+                  application/json:
+                      schema:
+                          type: object
+                          properties:
+                              message:
+                                  type: string
+    /statistics/mean/appointment:
+      get:
+        summary: gets a graph of mean of appointment lengths 
+        operationId: statisticsMeanAppointment
+        x-operation-name: statistics-mean-appointment
+        tags:
+          - statistics
+        responses:
+          "200":
+            description: gets a graph of mean of appointment lengths 
+            content:
+                image/svg:
+                  schema:
+                    type: string
+                    format: binary
+          "400":
+              description: Invalid request
+              content:
+                  application/json:
+                      schema:
+                          type: object
+                          properties:
+                              message:
+                                  type: string
+    /statistics/median/appointment:
+      get:
+        summary: gets a graph of median of appointment lengths 
+        operationId: statisticsMedianAppointment
+        x-operation-name: statistics-median-appointment
+        tags:
+          - statistics
+        responses:
+          "200":
+            description: gets a graph of median of appointment lengths 
+            content:
+                image/svg:
+                  schema:
+                    type: string
+                    format: binary
+          "400":
+              description: Invalid request
+              content:
+                  application/json:
+                      schema:
+                          type: object
+                          properties:
+                              message:
+                                  type: string
+    /statistics/range/appointment:
+      get:
+        summary: gets a graph of range of appointment lengths 
+        operationId: statisticsRangeAppointment
+        x-operation-name: statistics-range-appointment
+        tags:
+          - statistics
+        responses:
+          "200":
+            description: gets a graph of range of appointment lengths 
+            content:
+                image/svg:
+                  schema:
+                    type: string
+                    format: binary
+          "400":
+              description: Invalid request
+              content:
+                  application/json:
+                      schema:
+                          type: object
+                          properties:
+                              message:
+                                  type: string
     /auth/login:
         post:
             summary: creates a new JWT token

@@ -59,8 +59,7 @@ router.get('/get_counselor', async (req, res, next) => {
 
 router.get('/get_occupied', async (req, res, next) => {
   let options = { 
-    "endTime": req.query.endTime,
-    "startTime": req.query.startTime,
+    "date": req.query.date,
   };
 
 

@@ -105,8 +105,7 @@ module.exports = {
 
   /**
   * 
-  * @param options.endTime get crises
-  * @param options.startTime get only resolved crises
+  * @param options.date get crises
   * @param options.counselorId
   */
   getOccupied: async (options) => {
@@ -116,25 +115,34 @@ module.exports = {
     // var endTime = options.endTime.split('T')[1];
     var data;
     if (options.counselorId) {
-      const occupied = await db.appointments.findAll({
-        where: {
-          counselorId: options.counselorId,
-          // date: date,
-          // endTime: startTime,
-          // startTime: endTime
-        }
-      });
-      data = occupied;
+      if (options.date) {
+        const occupied = await db.appointments.findAll({
+          where: {
+            counselorId: options.counselorId,
+            date: date,
+          }
+        });
+        data = occupied;
+      } else {
+        const occupied = await db.appointments.findAll({
+          where: {
+            counselorId: options.counselorId,
+          }
+        });
+        data = occupied;
+      }
     } else {
-      const occupied = await db.appointments.findAll({
-        // where: {
-        //   date: date,
-        //   endTime: startTime,
-        //   startTime: endTime
-        // }
-      });
-      data = occupied;
-    }
+      if (options.date) {
+        const occupied = await db.appointments.findAll({
+          where: {
+            date: date,
+          }
+        });
+        data = occupied;
+      } else {
+        const occupied = await db.appointments.findAll();
+        data = occupied;
+      }    }
 
     var status = 200;
 
