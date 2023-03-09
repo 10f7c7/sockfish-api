@@ -11,7 +11,7 @@ module.exports = {
   * @param options.appointment.userId requiredThe unique identifier of the user
   */
   createAppointment: async (options) => {
-    var date = options.appointment.date;
+    var date = options.date.split('-')[2] + '-' + options.date.split('-')[0] + '-' + options.date.split('-')[1];
     var startTime = options.appointment.startTime;
     var endTime = options.appointment.endTime;
 
@@ -109,6 +109,7 @@ module.exports = {
   * @param options.counselorId
   */
   getOccupied: async (options) => {
+    options.date = options.date.split('-')[2] + '-' + options.date.split('-')[0] + '-' + options.date.split('-')[1];
 
     // var date = options.startTime.split('T')[0];
     // var startTime = options.startTime.split('T')[1];
