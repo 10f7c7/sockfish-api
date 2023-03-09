@@ -142,7 +142,9 @@ module.exports = {
     // Create dyname schedule that gets from database //
     ////////////////////////////////////////////////////
 
-    var CURRENT_TIME = new Date().toLocaleTimeString('it-US', {timeZone: "America/New_York"});
+    var temp = new Date().toLocaleTimeString('it-US', {timeZone: "America/New_York"}).split(':');
+
+    var CURRENT_TIME = new Date().setHours(temp[0], temp[1], temp[2]);
     const schedule = [[new Date().setHours(7,25,0), new Date().setHours(8,15,0), 1], [new Date().setHours(8,20,0), new Date().setHours(9,10,0), 2], [new Date().setHours(9,15,0), new Date().setHours(10,10,0), 3], [new Date().setHours(10,15,0), new Date().setHours(12,15,0), 4], [new Date().setHours(12,20,0), new Date().setHours(13,10,0), 5], [new Date().setHours(13,15,0), new Date().setHours(14,10,0), 6]];
     var current_course;
     schedule.forEach((helm) => {
@@ -174,7 +176,7 @@ module.exports = {
           "courseTeacher": "After Class",
           "courseRoom": "After Class"
         }
-      } else {
+      } else if (!data) {
         data = {
           "courseName": "In Between Class",
           "courseTeacher": "In Between Class",
