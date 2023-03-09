@@ -30,14 +30,14 @@ module.exports = {
           cnslravailed = true;
           return
         }
-        var stm = new Date().setHours(startTime.split(':')[0],startTime.split(':')[1],startTime.split(':')[2]);
-        var appstm = new Date().setHours(appt.startTime.split(':')[0],appt.startTime.split(':')[1],appt.startTime.split(':')[2]);
-        var appetm = new Date().setHours(appt.endTime.split(':')[0],appt.endTime.split(':')[1],appt.endTime.split(':')[2]);
+        var stm = new Date().setHours(startTime.split(':')[0], startTime.split(':')[1], startTime.split(':')[2]);
+        var appstm = new Date().setHours(appt.startTime.split(':')[0], appt.startTime.split(':')[1], appt.startTime.split(':')[2]);
+        var appetm = new Date().setHours(appt.endTime.split(':')[0], appt.endTime.split(':')[1], appt.endTime.split(':')[2]);
         if (stm >= appstm && stm <= appetm) {
           cnslravailed = true;
         }
       });
-      if (cnslravailed) return {status: 400,data: {message:'Counselor is not available at that time'}};
+      if (cnslravailed) return { status: 400, data: { message: 'Counselor is not available at that time' } };
     }
 
     const newAPPT = await db.appointments.create({
@@ -54,7 +54,7 @@ module.exports = {
     return {
       status: status,
       data: newAPPT
-    };  
+    };
   },
 
   /**
@@ -100,7 +100,7 @@ module.exports = {
     return {
       status: status,
       data: data
-    };  
+    };
   },
 
   /**
@@ -109,7 +109,8 @@ module.exports = {
   * @param options.counselorId
   */
   getOccupied: async (options) => {
-    var date = options.date.split('-')[2] + '-' + options.date.split('-')[0] + '-' + options.date.split('-')[1];
+    date = 0;
+    if (options.date) date = options.date.split('-')[2] + '-' + options.date.split('-')[0] + '-' + options.date.split('-')[1];
 
     // var date = options.startTime.split('T')[0];
     // var startTime = options.startTime.split('T')[1];
@@ -143,14 +144,15 @@ module.exports = {
       } else {
         const occupied = await db.appointments.findAll();
         data = occupied;
-      }    }
+      }
+    }
 
     var status = 200;
 
     return {
       status: status,
       data: data
-    };  
+    };
   },
 
   /**
@@ -170,7 +172,7 @@ module.exports = {
     // var date = year + '-' + month + '-' + day;
     var date = moment(new Date()).format('YYYY-MM-DD');
     console.log(date);
-    var startTime = new Date().toLocaleTimeString('it-US', {timeZone: "America/New_York"});
+    var startTime = new Date().toLocaleTimeString('it-US', { timeZone: "America/New_York" });
     var endTime = null;
     var data;
 
@@ -192,13 +194,13 @@ module.exports = {
             cnslravailed = true;
             return
           }
-          var appstm = new Date().setHours(appt.startTime.split(':')[0],appt.startTime.split(':')[1],appt.startTime.split(':')[2]);
-          var appetm = new Date().setHours(appt.endTime.split(':')[0],appt.endTime.split(':')[1],appt.endTime.split(':')[2]);
+          var appstm = new Date().setHours(appt.startTime.split(':')[0], appt.startTime.split(':')[1], appt.startTime.split(':')[2]);
+          var appetm = new Date().setHours(appt.endTime.split(':')[0], appt.endTime.split(':')[1], appt.endTime.split(':')[2]);
           if (startTime >= appstm && startTime <= appetm) {
             cnslravailed = true;
           }
         });
-        if (cnslravailed) {return {status: 400,data: {message:'Counselor is not available at that time'}};}
+        if (cnslravailed) { return { status: 400, data: { message: 'Counselor is not available at that time' } }; }
         console.log("occupied");
       }
       // console.log("occupied");
@@ -248,6 +250,6 @@ module.exports = {
     return {
       status: status,
       data: data
-    };  
+    };
   },
 };

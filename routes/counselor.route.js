@@ -60,6 +60,7 @@ router.get('/get_counselor', async (req, res, next) => {
 router.get('/get_occupied', async (req, res, next) => {
   let options = { 
     "date": req.query.date,
+    "counselorId": req.query.counselorId,
   };
 
 
