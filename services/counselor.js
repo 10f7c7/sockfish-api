@@ -109,14 +109,14 @@ module.exports = {
   * @param options.counselorId
   */
   getOccupied: async (options) => {
-    options.date = options.date.split('-')[2] + '-' + options.date.split('-')[0] + '-' + options.date.split('-')[1];
+    var date = options.date.split('-')[2] + '-' + options.date.split('-')[0] + '-' + options.date.split('-')[1];
 
     // var date = options.startTime.split('T')[0];
     // var startTime = options.startTime.split('T')[1];
     // var endTime = options.endTime.split('T')[1];
     var data;
     if (options.counselorId) {
-      if (options.date) {
+      if (date) {
         const occupied = await db.appointments.findAll({
           where: {
             counselorId: options.counselorId,
@@ -133,7 +133,7 @@ module.exports = {
         data = occupied;
       }
     } else {
-      if (options.date) {
+      if (date) {
         const occupied = await db.appointments.findAll({
           where: {
             date: date,
