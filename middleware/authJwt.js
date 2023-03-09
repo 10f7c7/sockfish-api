@@ -26,7 +26,7 @@ verifyToken = (req, res, next) => {
                 message: "Unauthorized!"
             });
         }
-        if (req.params.userId != decoded.id) {
+        if (req.params.userId != decoded.id && req.body.userId != decoded.id) {
             return res.status(401).send({
                 message: "Wrong User!"
             });

@@ -345,6 +345,8 @@ paths:
                                 properties:
                                     message:
                                         type: string
+        security:
+                - ApiKey: []
     /counselor/get_occupied:
       get:
         parameters:
@@ -470,6 +472,8 @@ paths:
                           properties:
                               message:
                                   type: string
+        security:
+                - ApiKey: []
     # /statistics/{userId}/mean    
     # /statistics/{userId}/median    
     # /statistics/{userId}/mode  
