@@ -11,7 +11,7 @@ module.exports = {
   * @param options.appointment.userId requiredThe unique identifier of the user
   */
   createAppointment: async (options) => {
-    var date = options.date.split('-')[2] + '-' + options.date.split('-')[0] + '-' + options.date.split('-')[1];
+    var date = options.appointment.date.split('-')[2] + '-' + options.appointment.date.split('-')[0] + '-' + options.appointment.date.split('-')[1];
     var startTime = options.appointment.startTime;
     var endTime = options.appointment.endTime;
 
