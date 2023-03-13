@@ -4,3 +4,4 @@ todo.txt
 killLostServer.txt
 /ssl
 *.log
+*.svg
