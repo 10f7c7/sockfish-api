@@ -134,7 +134,7 @@ module.exports = {
         // console.log(chart.renderToSVGString());
         // path.resolve(__dirname, '../');
         // console.log(`${path.resolve(__dirname, '../')}\\svg\\${uuid}.svg`);
-        fs.writeFileSync(`${path.resolve(__dirname, '../')}\\svg\\${uuid}.svg`, chart.renderToSVGString());
+        fs.writeFileSync(`${path.resolve(__dirname, '../')}/svg/${uuid}.svg`, chart.renderToSVGString());
 
         var status = 200;
 
@@ -214,7 +214,7 @@ module.exports = {
         // console.log(chart.renderToSVGString());
         // path.resolve(__dirname, '../');
         // console.log(`${path.resolve(__dirname, '../')}\\svg\\${uuid}.svg`);
-        fs.writeFileSync(`${path.resolve(__dirname, '../')}\\svg\\${uuid}.svg`, chart.renderToSVGString());
+        fs.writeFileSync(`${path.resolve(__dirname, '../')}/svg/${uuid}.svg`, chart.renderToSVGString());
 
         var status = 200;
 
