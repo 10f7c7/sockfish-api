@@ -160,7 +160,7 @@ module.exports = {
         //times.push(tmp);
         times += appt.startTime + " - " + appt.endTime + ",";
       });
-      times[-1] = "";
+      times = times.replace(/.$/,"");
       data = times;
     }
 
