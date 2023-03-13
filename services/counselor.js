@@ -152,13 +152,15 @@ module.exports = {
     }
 
     if (options.timesOnly) {
-      var times = [];
+      var times = "";
       data.forEach(function (appt) {
-        var tmp = {};
-        tmp.startTime = appt.startTime;
-        tmp.endTime = appt.endTime;
-        times.push(tmp);
+        //var tmp = {};
+        //tmp.startTime = appt.startTime;
+        //tmp.endTime = appt.endTime;
+        //times.push(tmp);
+        times += appt.startTime + " - " + appt.endTime + ",";
       });
+      times[-1] = "";
       data = times;
     }
 
