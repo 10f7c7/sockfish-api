@@ -162,7 +162,7 @@ module.exports = {
         appt.endTime = appt.endTime.slice(0, -3);
         times += appt.startTime + "-" + appt.endTime + ", ";
       });
-      times = times.replace(/.$/,"");
+      times = times.slice(0, -2);
       data = times;
     }
 
