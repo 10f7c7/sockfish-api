@@ -359,6 +359,14 @@ paths:
                   type: string
                   format: date
                   default: false
+          - name: timesOnly
+            description: get only resolved crises
+            in: query
+            schema:
+              properties:
+                status:
+                  type: boolean
+                  default: false
           - name: counselorId
             description: get crises
             in: query

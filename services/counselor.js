@@ -107,6 +107,7 @@ module.exports = {
   * 
   * @param options.date get crises
   * @param options.counselorId
+  * @param options.timesOnly
   */
   getOccupied: async (options) => {
     date = 0;
@@ -122,14 +123,16 @@ module.exports = {
           where: {
             counselorId: options.counselorId,
             date: date,
-          }
+          },
+          raw: true
         });
         data = occupied;
       } else {
         const occupied = await db.appointments.findAll({
           where: {
             counselorId: options.counselorId,
-          }
+          },
+          raw: true
         });
         data = occupied;
       }
@@ -138,13 +141,25 @@ module.exports = {
         const occupied = await db.appointments.findAll({
           where: {
             date: date,
-          }
+          },
+          raw: true
         });
         data = occupied;
       } else {
-        const occupied = await db.appointments.findAll();
+        const occupied = await db.appointments.findAll({raw: true});
         data = occupied;
       }
+    }
+
+    if (options.timesOnly) {
+      var times = [];
+      data.forEach(function (appt) {
+        var tmp = {};
+        tmp.startTime = appt.startTime;
+        tmp.endTime = appt.endTime;
+        times.push(tmp);
+      });
+      data = times;
     }
 
     var status = 200;
