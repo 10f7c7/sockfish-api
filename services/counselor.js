@@ -158,6 +158,8 @@ module.exports = {
         //tmp.startTime = appt.startTime;
         //tmp.endTime = appt.endTime;
         //times.push(tmp);
+        appt.startTime = appt.startTime.slice(0, -3);
+        appt.endTime = appt.endTime.slice(0, -3);
         times += appt.startTime + " - " + appt.endTime + ",";
       });
       times = times.replace(/.$/,"");
