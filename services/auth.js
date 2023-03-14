@@ -1,11 +1,11 @@
-const con = require('./connect.js');
 const config = require("../config/auth.config.js");
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
+const db = require('../models/index.js');
 
 
 module.exports = {
-    
+
     /**
      *
      * @param options.auth.username
@@ -13,7 +13,9 @@ module.exports = {
      */
     postSignUp: async (options) => {
         let sql = `INSERT INTO userauth (username,password) VALUES ('${options.auth.username}','${bcrypt.hashSync(options.auth.password, 8)}');`;
-        var returned = await con.connect(sql);
+        var returned = await db.sequelize.query(sql, {raw: true});
+        var returned = returned[0][0];
+
         var status = 200;
 
         return {
@@ -29,8 +31,10 @@ module.exports = {
      */
     postLogIn: async (options) => {
         let sql = `Select * FROM userauth WHERE username = '${options.auth.username}'`;
-        // var user = await con.connect(sql);
-        var user = await con.connect(['SELECT', 'userauth', '*', 'username', options.auth.username]);
+        var user = await db.sequelize.query(sql, {raw: true});
+        console.log(user);
+        var user = user[0][0];
+        // var user = await con.connect(['SELECT', 'userauth', '*', 'username', options.auth.username]);
         if (!user) {
             return {
                 status: 401,
