@@ -59,11 +59,7 @@ function ranger(list) {
 
 
 module.exports = {
-    /**
-    *
-  
-  
-    */
+
     statisticsAppointment: async () => {
         const uuid = uuidv4();
 
@@ -76,7 +72,6 @@ module.exports = {
             var end = (appt.endTime.split(':')[0] * 3600) + (appt.endTime.split(':')[1] * 60) + appt.endTime.split(':')[2] * 1;
             var duration = Math.floor((end - start)/60);
             mean.push(duration);
-            // console.log(duration);
         });
 
         const meaned = () => {
@@ -86,10 +81,6 @@ module.exports = {
             }
             return list;
         }
-
-        // const mean = mean(mean);
-        // console.log(Array(range(0,Math.max.apply(null, mean))));
-        // console.log(Math.max.apply(null, mean));
 
         var meanedd = meaned();
         meanedd.forEach(function (item, index) {
@@ -111,11 +102,6 @@ module.exports = {
             title: {
                 text: 'Frequency of Appointment Durations'
             },
-            // label: {
-            //     show: true,
-            //     position: 'bottom',
-            //     formatter: 'example'
-            // },
             //\u0021
             xAxis: {
                 data: range(0,Math.max.apply(null, mean) + 1),
@@ -131,9 +117,6 @@ module.exports = {
                 }
               ]
         });
-        // console.log(chart.renderToSVGString());
-        // path.resolve(__dirname, '../');
-        // console.log(`${path.resolve(__dirname, '../')}\\svg\\${uuid}.svg`);
         fs.writeFileSync(`${path.resolve(__dirname, '../')}/svg/${uuid}.svg`, chart.renderToSVGString());
 
         var status = 200;
@@ -144,9 +127,6 @@ module.exports = {
         };
     },
 
-    /**
-    * 
-    */
     statisticsUrgancy: async (options) => {
         const uuid = uuidv4();
 
@@ -156,7 +136,6 @@ module.exports = {
 
         appts.forEach(function (appt) {
             mean.push(appt.urgency);
-            // console.log(duration);
         });
 
         const meaned = () => {
@@ -166,10 +145,6 @@ module.exports = {
             }
             return list;
         }
-
-        // const mean = mean(mean);
-        // console.log(Array(range(0,Math.max.apply(null, mean))));
-        // console.log(Math.max.apply(null, mean));
 
         var meanedd = meaned();
         meanedd.forEach(function (item, index) {
@@ -191,11 +166,6 @@ module.exports = {
             title: {
                 text: 'Frequency of Crises Urgencies'
             },
-            // label: {
-            //     show: true,
-            //     position: 'bottom',
-            //     formatter: 'example'
-            // },
             //\u0021
             xAxis: {
                 data: range(0,Math.max.apply(null, mean) + 1),
@@ -211,9 +181,6 @@ module.exports = {
                 }
               ]
         });
-        // console.log(chart.renderToSVGString());
-        // path.resolve(__dirname, '../');
-        // console.log(`${path.resolve(__dirname, '../')}\\svg\\${uuid}.svg`);
         fs.writeFileSync(`${path.resolve(__dirname, '../')}/svg/${uuid}.svg`, chart.renderToSVGString());
 
         var status = 200;

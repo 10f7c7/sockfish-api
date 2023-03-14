@@ -4,8 +4,13 @@ var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 
 
-
 module.exports = {
+    
+    /**
+     *
+     * @param options.auth.username
+     * @param options.auth.password
+     */
     postSignUp: async (options) => {
         let sql = `INSERT INTO userauth (username,password) VALUES ('${options.auth.username}','${bcrypt.hashSync(options.auth.password, 8)}');`;
         var returned = await con.connect(sql);
@@ -16,6 +21,12 @@ module.exports = {
             data: { message: returned }
         };
     },
+
+    /**
+     *
+     * @param options.auth.username
+     * @param options.auth.password
+     */
     postLogIn: async (options) => {
         let sql = `Select * FROM userauth WHERE username = '${options.auth.username}'`;
         // var user = await con.connect(sql);

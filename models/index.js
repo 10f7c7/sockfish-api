@@ -1,11 +1,11 @@
 const { Sequelize, DataTypes } = require('sequelize');
-require('dotenv').config();
 const path = require('path');
+const config = require('../config/db.config.js');
 
 // initialize database connection
 const db = {};
-var sequelize = new Sequelize(process.env.MYSQL_DATABASE, process.env.MYSQL_USERNAME, process.env.MYSQL_PASSWORD, {
-    host: process.env.MYSQL_URL,
+var sequelize = new Sequelize(config.database, config.username, config.password, {
+    host: config.host,
     dialect: 'mysql',
 
     pool: {
@@ -16,6 +16,7 @@ var sequelize = new Sequelize(process.env.MYSQL_DATABASE, process.env.MYSQL_USER
 });
 
 // load models
+// TODO: add model and corresponding db table for user attributes
 var models = [
     'users.model',
     'crisis.model',

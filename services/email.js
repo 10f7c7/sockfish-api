@@ -1,6 +1,7 @@
 const nodemailer = require('nodemailer');
 require('dotenv').config();
 
+
 module.exports = {
     main: async () => {
         let transporter = nodemailer.createTransport({
@@ -15,7 +16,7 @@ module.exports = {
 
         let info = await transporter.sendMail({
             from: '"Anjay Singla" <' + process.env.MAIL_EMAIL + '>', // sender address
-            to: "edibleplanet2@gmail.com", // list of receivers
+            to: "", // list of receivers
             subject: "Hello", // Subject line
             text: "Hello world?", // plain text body
             html: "<b>Hello world?</b>", // html body

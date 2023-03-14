@@ -12,7 +12,8 @@ router.use(function (req, res, next) {
     next();
 });
 
-router.get('/:userId', [authJwt.verifyToken, authJwt.justReturn], async (req, res, next) => {
+
+router.get('/:userId', [authJwt.verifyToken], async (req, res, next) => {
     let options = {
         "userId": req.params.userId,
     };
@@ -29,7 +30,7 @@ router.get('/:userId', [authJwt.verifyToken, authJwt.justReturn], async (req, re
     }
 });
 
-router.post('/:userId', [authJwt.verifyToken, authJwt.justReturn], async (req, res, next) => {
+router.post('/:userId', [authJwt.verifyToken], async (req, res, next) => {
     let options = {
         "userId": req.params.userId,
     };
@@ -47,7 +48,7 @@ router.post('/:userId', [authJwt.verifyToken, authJwt.justReturn], async (req, r
     }
 });
 
-router.get('/:userId/current_course', [authJwt.verifyToken, authJwt.justReturn], async (req, res, next) => {
+router.get('/:userId/current_course', [authJwt.verifyToken], async (req, res, next) => {
     let options = {
         "userId": req.params.userId,
     };
@@ -65,7 +66,7 @@ router.get('/:userId/current_course', [authJwt.verifyToken, authJwt.justReturn],
 });
 
 
-router.get('/:userId/hall_passes', [authJwt.verifyToken, authJwt.justReturn], async (req, res, next) => {
+router.get('/:userId/hall_passes', [authJwt.verifyToken], async (req, res, next) => {
     let options = {
         "userId": req.params.userId,
     };
@@ -82,7 +83,7 @@ router.get('/:userId/hall_passes', [authJwt.verifyToken, authJwt.justReturn], as
     }
 });
 
-router.post('/:userId/hall_passes', [authJwt.verifyToken, authJwt.justReturn], async (req, res, next) => {
+router.post('/:userId/hall_passes', [authJwt.verifyToken], async (req, res, next) => {
     let options = {
         "userId": req.params.userId,
     };

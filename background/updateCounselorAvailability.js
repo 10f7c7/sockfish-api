@@ -1,15 +1,9 @@
 const db = require('../models/index.js');
 const moment = require('moment');
 
-async function updateCounselorAvailability()  {
-    // var dat = new Date();
-    // var day = dat.getDate();
-    // var month = dat.getMonth() + 1;
-    // var year = dat.getFullYear();
-    // var date = year + '-' + month + '-' + day;
+async function updateCounselorAvailability() {
     var date = moment.utc(new Date()).format('YYYY-MM-DD');
-    // var startTime = new Date(new Date().getTime() /*+ 3 * 60 * 60 * 1000*/).toISOString().split('T')[1].replace('Z', '').split('.')[0];
-    var startTime = new Date().toLocaleTimeString('it-US', {timeZone: "America/New_York"});
+    var startTime = new Date().toLocaleTimeString('it-US', { timeZone: "America/New_York" });
     const counselors = await db.counselors.findAll({
         raw: true
     });
@@ -28,9 +22,9 @@ async function updateCounselorAvailability()  {
                     isAvailave = false;
                     return
                 }
-                var stm = new Date().setHours(startTime.split(':')[0],startTime.split(':')[1],startTime.split(':')[2]);
-                var appstm = new Date().setHours(ho.startTime.split(':')[0],ho.startTime.split(':')[1],ho.startTime.split(':')[2]);
-                var appetm = new Date().setHours(ho.endTime.split(':')[0],ho.endTime.split(':')[1],ho.endTime.split(':')[2]);
+                var stm = new Date().setHours(startTime.split(':')[0], startTime.split(':')[1], startTime.split(':')[2]);
+                var appstm = new Date().setHours(ho.startTime.split(':')[0], ho.startTime.split(':')[1], ho.startTime.split(':')[2]);
+                var appetm = new Date().setHours(ho.endTime.split(':')[0], ho.endTime.split(':')[1], ho.endTime.split(':')[2]);
                 if (stm >= appstm && stm <= appetm) {
                     isAvailave = false;
                     if (counselor.available) {
@@ -56,17 +50,12 @@ async function updateCounselorAvailability()  {
                 }
             });
         }
-
-
-
     });
-
 }
 
 module.exports = {
 
-    updateCounselorAvailability: async (options) => {
+    updateCounselorAvailability: async () => {
         setInterval(updateCounselorAvailability, 60000);
-        // updateCounselorAvailability();
     }
 }

@@ -3,7 +3,6 @@ const auth = require('../services/auth');
 const router = new express.Router();
 
 
-
 router.use(function (req, res, next) {
     res.header(
         "Access-Control-Allow-Headers",

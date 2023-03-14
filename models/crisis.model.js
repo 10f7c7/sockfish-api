@@ -1,7 +1,7 @@
 module.exports = (Sequelize, DataTypes) => {
     const Crisis = Sequelize.define('crisis', {
         crisisId: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
         },

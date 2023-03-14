@@ -1,6 +1,5 @@
 const express = require('express');
 const crisis = require('../services/crisis');
-const { authJwt } = require("../middleware");
 const router = new express.Router();
 
 router.post('/create_crisis', async (req, res, next) => {

@@ -33,19 +33,11 @@ verifyToken = (req, res, next) => {
         }
         req.userId = decoded.id;
         next();
+        return;
     });
 };
 
-justReturn = (req, res, next) => {
-    console.log("userId", req.userId);
-    next();
-    return;
-}
-
-
-
 const authJwt = {
-    verifyToken: verifyToken,
-    justReturn: justReturn
+    verifyToken: verifyToken
 };
 module.exports = authJwt;

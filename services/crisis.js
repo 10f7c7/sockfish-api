@@ -1,11 +1,10 @@
 const db = require('../models/index.js');
 
 
-
 module.exports = {
+
     /**
-    * 
-  
+    *
     * @param options.crisisItem.description required
     * @param options.crisisItem.gps required
     * @param options.crisisItem.location required
@@ -15,7 +14,6 @@ module.exports = {
     * @param options.crisisItem.userId requiredThe unique identifier of the user
     * @param options.crisisItem.action
     */
-
     createCrisis: async (options) => {
         options.crisisItem.userId = options.crisisItem.userId || 0
         if (options.crisisItem.action == 'startCrisis') {
