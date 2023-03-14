@@ -1,918 +1,774 @@
 openapi: 3.0.0
 info:
-    version: 1.0.0
-    title: Sockfish
-    description: Sockfish
+  version: 1.0.0
+  title: Sockfish
+  description: Sockfish
 servers:
-    - url: https://api.10f7c7.dev:3000/api/v1
+  - url: https://api.10f7c7.dev:3000/api/v1
 paths:
-    /users/{userId}:
-        parameters:
-            - name: userId
-              description: The unique identifier of the user
-              in: path
-              required: true
-              schema:
-                  $ref: "#/components/schemas/UserId"
-        get:
-            summary: Read a user object
-            operationId: getUserById
-            x-operation-name: get-user-by-id
-            tags:
-                - users
-            responses:
-                "200":
-                    description: The user corresponding to the provided `userId`
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/User"
-                "404":
-                    description: No user found for the provided `userId`
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Error"
-                "500":
-                    description: Unexpected error
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Error"
-            security:
-                - ApiKey: []
-        post:
-            summary: Sets a user's object
-            operationId: setUserById
-            x-operation-name: set-user-by-id
-            tags:
-                - users
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/User"
-                            properties:
-                                passType:
-                                    type: string
-                                    enum:
-                                        - bathroom
-                                        - nurse
-                                        - water
-                                        - hall
-                                        - office
-                                        - media
-                                        - ss
-                                        - other
-            responses:
-                "200":
-                    description: Successfully created a new artist
-                "400":
-                    description: Invalid request
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    message:
-                                        type: string
-            security:
-                - ApiKey: []
-    /users/{userId}/hall_passes:
-        parameters:
-            - name: userId
-              description: The unique identifier of the user
-              in: path
-              required: true
-              schema:
-                  $ref: "#/components/schemas/UserId"
-        get:
-            summary: Read a user hall passes
-            operationId: getUserPassesById
-            x-operation-name: get-user-passes-by-id
-            tags:
-                - users
-            responses:
-                "200":
-                    description: The user corresponding to the provided `userId`
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/HallPasses"
-                "404":
-                    description: No user found for the provided `userId`
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Error"
-                "500":
-                    description: Unexpected error
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Error"
-            security:
-                - ApiKey: []
-        post:
-            summary: creates a new hall pass
-            operationId: setUserPassesById
-            x-operation-name: set-user-passes-by-id
-            tags:
-                - users
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            allOf:
-                                - $ref: "#/components/schemas/HallPassItem"
-                            required:
-                                - action
-                            properties:
-                                action:
-                                    type: string
-                                    enum:
-                                        - endPass
-                                        - startPass
-            responses:
-                "200":
-                    description: The user corresponding to the provided `userId`
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/HallPasses"
-                "400":
-                    description: Invalid request
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    message:
-                                        type: string
-            security:
-                - ApiKey: []
-    /users/{userId}/current_course:
-        parameters:
-            - name: userId
-              description: The unique identifier of the user
-              in: path
-              required: true
-              schema:
-                  $ref: "#/components/schemas/UserId"
-        get:
-            summary: Returns students current class
-            tags:
-                - users
-            responses:
-                "200":
-                    description: Returns students current class
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Course"
-                "404":
-                    description: No user found for the provided `userId`
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Error"
-                "500":
-                    description: Unexpected error
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Error"
-            security:
-                - ApiKey: []
-    /crisis/get_crises:
-      parameters:
-        - name: getResolved
-          description: get only resolved crises
-          in: query
-          schema:
-            properties:
-              status:
-                type: boolean
-                default: false
-        - name: getAll
-          description: get crises
-          in: query
-          schema:
-            properties:
-              status:
-                type: boolean
-                default: false
-      get:
-        summary: gets all global crises
-        operationId: getAllCrises
-        x-operation-name: get-all-crises
-        tags:
-            - crisis
-        responses:
-            "200":
-                description: The user corresponding to the provided `userId`
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/Crisis"
-            "404":
-                description: No user found for the provided `userId`
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/Error"
-            "500":
-                description: Unexpected error
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/Error"
-    /crisis/get_crises/users/{userId}:
-      parameters:
-        - name: userId
-          description: The unique identifier of the user
-          in: path
-          required: true
-          schema:
-              $ref: "#/components/schemas/UserId"
-        - name: getResolved
-          description: get only resolved crises
-          in: query
-          schema:
-            properties:
-              status:
-                type: boolean
-                default: false
-        - name: getAll
-          description: get crises
-          in: query
-          schema:
-            properties:
-              status:
-                type: boolean
-                default: false
-      get:
-        summary: gets all user crises
-        operationId: getAllCrisesById
-        x-operation-name: get-all-crises-by-id
-        tags:
-            - crisis
-        responses:
-            "200":
-                description: The user corresponding to the provided `userId`
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/Crisis"
-            "404":
-                description: No user found for the provided `userId`
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/Error"
-            "500":
-                description: Unexpected error
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/Error"
-    /crisis/create_crisis:
-      post:
-        summary: creates a crisis entry
-        operationId: createCrisis
-        x-operation-name: create-crisis
-        tags:
-            - crisis
-        requestBody:
-            required: true
-            content:
-                application/json:
-                    schema:
-                      allOf:
-                        - $ref: "#/components/schemas/CrisisItem"
-                      required:
-                        - action
-                      properties:
-                        action:
-                          type: string
-                          enum: 
-                            - startCrisis
-                            - endCrisis
-        responses:
-            "200":
-                description: The user corresponding to the provided `userId`
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/Crisis"
-            "400":
-                description: Invalid request
-                content:
-                    application/json:
-                        schema:
-                            type: object
-                            properties:
-                                message:
-                                    type: string
-    /counselor/create_appointement:
-      post:
-        summary: creates an appointment
-        operationId: createAppointment
-        x-operation-name: create-appointment
-        tags:
-          - counselor
-        requestBody:
-          required: true
+  /users/{userId}:
+    parameters:
+      - name: userId
+        description: The unique identifier of the user
+        in: path
+        required: true
+        schema:
+          $ref: "#/components/schemas/UserId"
+    get:
+      summary: Read a user object
+      operationId: getUserById
+      tags:
+        - users
+      responses:
+        "200":
+          description: The user corresponding to the provided `userId`
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Appointment"
-        responses:
-                "200":
-                    description: Successfully created a new JWT token
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Appointment"
-                "400":
-                    description: Invalid request
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    message:
-                                        type: string
-        security:
-                - ApiKey: []
-    /counselor/get_occupied:
-      get:
-        parameters:
-          - name: date
-            description: get only resolved crises
-            in: query
+                $ref: "#/components/schemas/User"
+        "404":
+          description: No user found for the provided `userId`
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - ApiKey: []
+  /users/{userId}/hall_passes:
+    parameters:
+      - name: userId
+        description: The unique identifier of the user
+        in: path
+        required: true
+        schema:
+          $ref: "#/components/schemas/UserId"
+    get:
+      summary: Read a user hall passes
+      operationId: getUserPassesById
+      tags:
+        - users
+      responses:
+        "200":
+          description: The user corresponding to the provided `userId`
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HallPasses"
+        "404":
+          description: No user found for the provided `userId`
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - ApiKey: []
+    post:
+      summary: creates a new hall pass
+      operationId: setUserPassesById
+      tags:
+        - users
+      requestBody:
+        required: true
+        content:
+          application/json:
             schema:
+              allOf:
+                - $ref: "#/components/schemas/HallPassItem"
+              required:
+                - action
               properties:
-                status:
+                action:
                   type: string
-                  format: date
-                  default: false
-          - name: timesOnly
-            description: get only resolved crises
-            in: query
-            schema:
-              properties:
-                status:
-                  type: boolean
-                  default: false
-          - name: counselorId
-            description: get crises
-            in: query
-            schema:
-              properties:
-                status:
-                  type: integer
-                  default: false
-        summary: gets occupied counselors
-        operationId: getOccupied
-        x-operation-name: get-occupied
-        tags:
-          - counselor
-        responses:
-          "200":
-              description: Successfully created a new JWT token
-              content:
-                  application/json:
-                    schema:
-                      type: array
-                      items:
-                        $ref: "#/components/schemas/Appointment"
-          "400":
-              description: Invalid request
-              content:
-                  application/json:
-                      schema:
-                          type: object
-                          properties:
-                              message:
-                                  type: string
-    /counselor/get_counselor/{counselorId}:
-      get:
-        parameters:
-          - name: counselorId
-            in: path
-            required: true # lies is false
-            schema:
-              type: integer
-          - name: isAvailable
-            in: query
-            schema:
-              properties:
-                status:
-                  type: boolean
-                  # format: date-time
-                  default: false
-        summary: gets all counselors
-        operationId: getCounselors
-        x-operation-name: get-counselors
-        tags:
-          - counselor
-        responses:
-          "200":
-              description: Successfully created a new JWT token
-              content:
-                  application/json:
-                    schema:
-                      type: array
-                      items:
-                        $ref: "#/components/schemas/Counselor"
-          "400":
-              description: Invalid request
-              content:
-                  application/json:
-                      schema:
-                          type: object
-                          properties:
-                              message:
-                                  type: string
-    /counselor/toggle_walkin:
-      post:
-        summary: gets all counselors
-        operationId: toggleWalkin
-        x-operation-name: toggle-walkin
-        tags:
-          - counselor
-        requestBody:
-          required: true
+                  enum:
+                    - startPass
+                    - endPass
+      responses:
+        "200":
+          description: The user corresponding to the provided `userId`
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HallPasses"
+        "400":
+          description: Invalid request
           content:
             application/json:
               schema:
                 type: object
-                required:
-                  - action
-                  - counselorId
-                  - userId
                 properties:
-                  action:
+                  message:
                     type: string
-                    enum:
-                      - startWalkin
-                      - endWalkin
-                  counselorId:
-                    type: integer
-                  userId:
-                    type: integer
-        responses:
-          "200":
-              description: Successfully created a new JWT token
-              content:
-                  application/json:
-                    schema:
-                      $ref: "#/components/schemas/Counselor"
-          "400":
-              description: Invalid request
-              content:
-                  application/json:
-                      schema:
-                          type: object
-                          properties:
-                              message:
-                                  type: string
-        security:
-                - ApiKey: []
-    /statistics/urgancy:
-      get:
-        summary: gets a graph of crises urgancy 
-        operationId: statisticsUrgancy
-        x-operation-name: statistics-urgancy
-        tags:
-          - statistics
-        responses:
-          "200":
-            description: gets a graph of mode of crises urgancy 
-            content:
-                image/svg:
-                  schema:
+      security:
+        - ApiKey: []
+  /users/{userId}/current_course:
+    parameters:
+      - name: userId
+        description: The unique identifier of the user
+        in: path
+        required: true
+        schema:
+          $ref: "#/components/schemas/UserId"
+    get:
+      summary: Returns students current class
+      tags:
+        - users
+      responses:
+        "200":
+          description: Returns students current class
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Course"
+        "404":
+          description: No user found for the provided `userId`
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - ApiKey: []
+  /crisis/get_crises:
+    parameters:
+      - name: getResolved
+        description: get only resolved crises
+        in: query
+        schema:
+          properties:
+            status:
+              type: boolean
+              default: false
+      - name: getAll
+        description: get crises
+        in: query
+        schema:
+          properties:
+            status:
+              type: boolean
+              default: false
+    get:
+      summary: gets all global crises
+      operationId: getAllCrises
+      tags:
+        - crisis
+      responses:
+        "200":
+          description: The user corresponding to the provided `userId`
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Crisis"
+        "404":
+          description: No user found for the provided `userId`
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /crisis/get_crises/users/{userId}:
+    parameters:
+      - name: userId
+        description: The unique identifier of the user
+        in: path
+        required: true
+        schema:
+          $ref: "#/components/schemas/UserId"
+      - name: getResolved
+        description: get only resolved crises
+        in: query
+        schema:
+          properties:
+            status:
+              type: boolean
+              default: false
+      - name: getAll
+        description: get crises
+        in: query
+        schema:
+          properties:
+            status:
+              type: boolean
+              default: false
+    get:
+      summary: gets all user crises
+      operationId: getAllCrisesById
+      tags:
+        - crisis
+      responses:
+        "200":
+          description: The user corresponding to the provided `userId`
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Crisis"
+        "404":
+          description: No user found for the provided `userId`
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /crisis/create_crisis:
+    post:
+      summary: creates a crisis entry
+      operationId: createCrisis
+      tags:
+        - crisis
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/CrisisItem"
+              required:
+                - action
+              properties:
+                action:
+                  type: string
+                  enum:
+                    - startCrisis
+                    - endCrisis
+      responses:
+        "200":
+          description: The user corresponding to the provided `userId`
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CrisisItem"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
                     type: string
-                    format: binary
-          "400":
-              description: Invalid request
-              content:
-                  application/json:
-                      schema:
-                          type: object
-                          properties:
-                              message:
-                                  type: string
-    /statistics/appointment:
-      get:
-        summary: gets a graph of appointment info 
-        operationId: statisticsAppointment
-        x-operation-name: statistics-appointment
-        tags:
-          - statistics
-        responses:
-          "200":
-            description: gets a graph of appointment 
-            content:
-                image/svg:
-                  schema:
+  /counselor/create_appointement:
+    post:
+      summary: creates an appointment
+      operationId: createAppointment
+      tags:
+        - counselor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Appointment"
+      responses:
+        "200":
+          description: Successfully created a new JWT token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Appointment"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
                     type: string
-                    format: binary
-          "400":
-              description: Invalid request
-              content:
-                  application/json:
-                      schema:
-                          type: object
-                          properties:
-                              message:
-                                  type: string
-    # /statistics/mode/urgancy:
-    #   get:
-    #     summary: gets a graph of mode of crises urgancy 
-    #     operationId: statisticsModeUrgancy
-    #     x-operation-name: statistics-mode-urgancy
-    #     tags:
-    #       - statistics
-    #     responses:
-    #       "200":
-    #         description: gets a graph of mode of crises urgancy 
-    #         content:
-    #             image/svg:
-    #               schema:
-    #                 type: string
-    #                 format: binary
-    #       "400":
-    #           description: Invalid request
-    #           content:
-    #               application/json:
-    #                   schema:
-    #                       type: object
-    #                       properties:
-    #                           message:
-    #                               type: string
-    # /statistics/mean/urgancy:
-    #   get:
-    #     summary: gets a graph of mean of crises urgancy 
-    #     operationId: statisticsMeanUrgancy
-    #     x-operation-name: statistics-mean-urgancy
-    #     tags:
-    #       - statistics
-    #     responses:
-    #       "200":
-    #         description: gets a graph of mean of crises urgancy 
-    #         content:
-    #             image/svg:
-    #               schema:
-    #                 type: string
-    #                 format: binary
-    #       "400":
-    #           description: Invalid request
-    #           content:
-    #               application/json:
-    #                   schema:
-    #                       type: object
-    #                       properties:
-    #                           message:
-    #                               type: string
-    # /statistics/mean/appointment:
-    #   get:
-    #     summary: gets a graph of mean of appointment lengths 
-    #     operationId: statisticsMeanAppointment
-    #     x-operation-name: statistics-mean-appointment
-    #     tags:
-    #       - statistics
-    #     responses:
-    #       "200":
-    #         description: gets a graph of mean of appointment lengths 
-    #         content:
-    #             image/svg:
-    #               schema:
-    #                 type: string
-    #                 format: binary
-    #       "400":
-    #           description: Invalid request
-    #           content:
-    #               application/json:
-    #                   schema:
-    #                       type: object
-    #                       properties:
-    #                           message:
-    #                               type: string
-    # /statistics/median/appointment:
-    #   get:
-    #     summary: gets a graph of median of appointment lengths 
-    #     operationId: statisticsMedianAppointment
-    #     x-operation-name: statistics-median-appointment
-    #     tags:
-    #       - statistics
-    #     responses:
-    #       "200":
-    #         description: gets a graph of median of appointment lengths 
-    #         content:
-    #             image/svg:
-    #               schema:
-    #                 type: string
-    #                 format: binary
-    #       "400":
-    #           description: Invalid request
-    #           content:
-    #               application/json:
-    #                   schema:
-    #                       type: object
-    #                       properties:
-    #                           message:
-    #                               type: string
-    # /statistics/range/appointment:
-    #   get:
-    #     summary: gets a graph of range of appointment lengths 
-    #     operationId: statisticsRangeAppointment
-    #     x-operation-name: statistics-range-appointment
-    #     tags:
-    #       - statistics
-    #     responses:
-    #       "200":
-    #         description: gets a graph of range of appointment lengths 
-    #         content:
-    #             image/svg:
-    #               schema:
-    #                 type: string
-    #                 format: binary
-    #       "400":
-    #           description: Invalid request
-    #           content:
-    #               application/json:
-    #                   schema:
-    #                       type: object
-    #                       properties:
-    #                           message:
-    #                               type: string
-    /auth/login:
-        post:
-            summary: creates a new JWT token
-            operationId: createAuthToken
-            x-operation-name: create-auth-token
-            tags:
-                - auth
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/UserLogin"
-            responses:
-                "200":
-                    description: Successfully created a new JWT token
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/UserToken"
-                "400":
-                    description: Invalid request
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    message:
-                                        type: string
-    /auth/signup:
-        post:
-            summary: creates a new user
-            operationId: createUser
-            x-operation-name: create-user
-            tags:
-                - auth
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/UserLogin"
-            responses:
-                "200":
-                    description: Successfully created a new user
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    message:
-                                        type: string
-                "400":
-                    description: Invalid request
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    message:
-                                        type: string
-components:
-    schemas:
-        UserId:
-            description: The unique identifier of the user
+      security:
+        - ApiKey: []
+  /counselor/get_occupied:
+    get:
+      parameters:
+        - name: date
+          description: get only resolved crises
+          in: query
+          schema:
+            properties:
+              status:
+                type: string
+                format: date
+                default: false
+        - name: timesOnly
+          description: get only resolved crises
+          in: query
+          schema:
+            properties:
+              status:
+                type: boolean
+                default: false
+        - name: counselorId
+          description: get crises
+          in: query
+          schema:
+            properties:
+              status:
+                type: integer
+                default: false
+      summary: gets occupied counselors
+      operationId: getOccupied
+      tags:
+        - counselor
+      responses:
+        "200":
+          description: Successfully created a new JWT token
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  allOf:
+                    - $ref: "#/components/schemas/Appointment"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /counselor/get_counselor/{counselorId}:
+    get:
+      parameters:
+        - name: counselorId
+          in: path
+          required: true # lies is false
+          schema:
             type: integer
-        Course:
-            type: object
-            description: the names and locations of classes
-            required:
-                - courseName
-                - courseRoom
-                - courseTeacher
+        - name: isAvailable
+          in: query
+          schema:
             properties:
-                courseName:
+              status:
+                type: boolean
+                # format: date-time
+                default: false
+      summary: gets all counselors
+      operationId: getCounselors
+      tags:
+        - counselor
+      responses:
+        "200":
+          description: Successfully created a new JWT token
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Counselor"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
                     type: string
-                courseRoom:
+  /counselor/toggle_walkin:
+    post:
+      summary: gets all counselors
+      operationId: toggleWalkin
+      tags:
+        - counselor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - action
+                - counselorId
+                - userId
+              properties:
+                action:
+                  type: string
+                  enum:
+                    - startWalkin
+                    - endWalkin
+                counselorId:
+                  type: integer
+                  example: 1
+                userId:
+                  type: integer
+                  example: 1
+      responses:
+        "200":
+          description: Successfully created a new JWT token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Counselor"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
                     type: string
-                courseTeacher:
+      security:
+        - ApiKey: []
+  /statistics/urgancy:
+    get:
+      summary: gets a graph of crises urgancy
+      operationId: statisticsUrgancy
+      tags:
+        - statistics
+      responses:
+        "200":
+          description: gets a graph of mode of crises urgancy
+          content:
+            image/svg:
+              schema:
+                type: string
+                format: binary
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
                     type: string
-        HallPasses:
-            type: array
-            description: list of user hall passes
-            items:
-                $ref: "#/components/schemas/HallPassItem"
-        HallPassItem:
-            type: object
-            description: the times and type of hall passes
-            required:
-                - type
-                - exitTime
-                - originRoom
-                - destRoom
-            properties:
-                type:
+  /statistics/appointment:
+    get:
+      summary: gets a graph of appointment info
+      operationId: statisticsAppointment
+      tags:
+        - statistics
+      responses:
+        "200":
+          description: gets a graph of appointment
+          content:
+            image/svg:
+              schema:
+                type: string
+                format: binary
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
                     type: string
-                    enum:
-                        - Bathroom
-                        - Hall
-                        - Health Room
-                        - Water
-                        - Front Office
-                        - Media Center
-                        - Student Services
-                        - Other
-                exitTime:
+  /auth/login:
+    post:
+      summary: creates a new JWT token
+      operationId: createAuthToken
+      tags:
+        - auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserLogin"
+      responses:
+        "200":
+          description: Successfully created a new JWT token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserToken"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
                     type: string
-                    format: date-time
-                    readOnly: true
-                returnTime:
+  /auth/signup:
+    post:
+      summary: creates a new user
+      operationId: createUser
+      tags:
+        - auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserLogin"
+      responses:
+        "200":
+          description: Successfully created a new user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
                     type: string
-                    format: date-time
-                    readOnly: true
-                originRoom:
-                    type: integer
-                destRoom:
-                    type: integer
-        User:
-            type: object
-            required:
-                - id
-                - name
-                - attributes
-                - hallPassTimes
-                - information
-                - appointments
-            properties:
-                id:
-                    $ref: "#/components/schemas/UserId"
-                name:
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
                     type: string
-                attributes:
-                    type: object
-                    required:
-                        - hasHallPass
-                    properties:
-                        hasHallPass:
-                            type: boolean
-                hallPassTimes:
-                    $ref: "#/components/schemas/HallPasses"
-                information:
-                    type: object
-                    required:
-                        - graduationYear
-                        - courses
-                    properties:
-                        graduationYear:
-                            type: string
-                        courses:
-                            type: array
-                            items:
-                                $ref: "#/components/schemas/Course"
-                description:
-                    type: string
-        UserLogin:
-            type: object
-            required:
-                - username
-                - password
-            properties:
-                username:
-                    type: string
-                password:
-                    type: string
-        UserToken:
-            type: object
-            required:
-                - id
-                - username
-                - authToken
-            properties:
-                id:
-                    type: integer
-                username:
-                    type: string
-                authToken:
-                    type: string
-        Crisis:
-          type: array
-          description: list of crises
-          items:
-            allOf:
-              - $ref: "#/components/schemas/CrisisItem"
-        CrisisItem:
+components:
+  schemas:
+    UserId:
+      description: The unique identifier of the user
+      type: integer
+      example: 1
+    Course:
+      type: object
+      description: the names and locations of classes
+      required:
+        - courseName
+        - courseRoom
+        - courseTeacher
+      properties:
+        courseName:
+          type: string
+          example: AP Biology
+        courseRoom:
+          type: string
+          example: 137
+        courseTeacher:
+          type: string
+          example: Mr. Cliford
+    HallPasses:
+      type: array
+      description: list of user hall passes
+      items:
+        $ref: "#/components/schemas/HallPassItem"
+    HallPassItem:
+      type: object
+      description: the times and type of hall passes
+      required:
+        - type
+        - exitTime
+        - originRoom
+      properties:
+        type:
+          type: string
+          enum:
+            - Bathroom
+            - Hall
+            - Health Room
+            - Water
+            - Front Office
+            - Media Center
+            - Student Services
+            - Other
+        exitTime:
+          type: string
+          format: date-time
+          readOnly: true
+        returnTime:
+          type: string
+          format: date-time
+          readOnly: true
+        originRoom:
+          type: integer
+          example: 137
+    User:
+      type: object
+      required:
+        - id
+        - name
+        - attributes
+        - hallPassTimes
+        - information
+        - appointments
+      properties:
+        id:
+          $ref: "#/components/schemas/UserId"
+        name:
+          type: string
+          example: "Anjay Singla"
+        attributes:
           type: object
           required:
-            - location
-            - gps
-            - description
-            - needs
-            - urgency
-            - userId
-            - crisisId
+            - hasHallPass
+            - isInCrisis
           properties:
-            resolved:
+            hasHallPass:
               type: boolean
-              readOnly: true
-            location:
-              type: string
-            gps:
-              type: string
-            description:
-              type: string
-            needs:
-              type: string
-            urgency:
-              type: integer
-            userId:
-              $ref: "#/components/schemas/UserId"
-            crisisId:
-              type: integer
-              readOnly: true
-        Appointment:
+            isInCrisis:
+              type: boolean
+        hallPassTimes:
+          $ref: "#/components/schemas/HallPasses"
+        information:
           type: object
           required:
-            - counselorId
-            - startTime
-            - date
-            - reason
-            - userId
+            - graduationYear
+            - courses
           properties:
-            counselorId:
-              type: integer
-            startTime:
+            graduationYear:
               type: string
-              format: full-time
-            endTime:
-              type: string
-              format: full-time
-              nullable: true
-            date:
-              type: string
-              format:  date
-            reason:
-              type: string
-            userId:
-              $ref: "#/components/schemas/UserId"
-        Counselor:
-          type: object
-          required:
-            - counselorId
-            - name
-            - available
-            - walkInAvailable
-          properties:
-            counselorId:
-              type: integer
-            name:
-              type: string
-            available:
-              type: boolean
-            walkInAvailable:
-              type: boolean
-        Error:
-            type: object
-            required:
-                - message
-            properties:
-                message:
-                    description: A human readable error message
-                    type: string
-    securitySchemes:
-        ApiKey:
-            type: apiKey
-            in: header
-            name: x-access-token
+              example: "2026"
+            courses:
+              type: array
+              items:
+                $ref: "#/components/schemas/Course"
+    UserLogin:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          example: sock
+        password:
+          type: string
+          example: fishes
+    UserToken:
+      type: object
+      required:
+        - id
+        - username
+        - authToken
+      properties:
+        id:
+          type: integer
+          example: "1"
+        username:
+          type: string
+          example: "sock"
+        authToken:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjc4ODIzODYwLCJleHAiOjE2Nzg5MTAyNjB9.t0yDlPgpM22RpMd5RZpNcZKBY3yw0SEG4Gib76hZ8GE"
+    Crisis:
+      type: array
+      description: list of crises
+      items:
+        allOf:
+          - $ref: "#/components/schemas/CrisisItem"
+    CrisisItem:
+      type: object
+      required:
+        - location
+        - gps
+        - description
+        - needs
+        - urgency
+        - userId
+        - crisisId
+      properties:
+        resolved:
+          type: boolean
+          readOnly: true
+        location:
+          type: string
+          example: "school"
+        gps:
+          type: string
+          example: "NoGPSData"
+        description:
+          type: string
+          example: "this guy, he needs help"
+        needs:
+          type: string
+          example: "human interaction"
+        urgency:
+          type: integer
+          example: 10
+        userId:
+          $ref: "#/components/schemas/UserId"
+        crisisId:
+          type: integer
+          readOnly: true
+          example: 420
+    Appointment:
+      type: object
+      required:
+        - counselorId
+        - startTime
+        - date
+        - reason
+        - userId
+      properties:
+        counselorId:
+          type: integer
+          example: 1
+        startTime:
+          type: string
+          format: full-time
+          example: "10:20:00"
+        endTime:
+          type: string
+          format: full-time
+          example: "10:30:00"
+          nullable: true
+        date:
+          type: string
+          format: date
+        reason:
+          type: string
+          writeOnly: true
+          example: "Anxiety"
+        userId:
+          allOf:
+            - $ref: "#/components/schemas/UserId"
+          writeOnly: true
+    Counselor:
+      type: object
+      required:
+        - counselorId
+        - name
+        - available
+        - walkInAvailable
+      properties:
+        counselorId:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Ives
+        available:
+          type: boolean
+        walkInAvailable:
+          type: boolean
+    Error:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          description: A human readable error message
+          type: string
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: x-access-token

@@ -10,7 +10,9 @@ module.exports = {
     */
     getUserId: async (options) => {
 
-        var returned = await db.sequelize.query(`SELECT * FROM users WHERE id = ${options.userId}`);
+        var returned = await db.sequelize.query(`SELECT * FROM users WHERE id = ${options.userId}`, { raw: true });
+        returned[0][0].information = JSON.parse(returned[0][0].information);
+        returned[0][0].attributes = JSON.parse(returned[0][0].attributes);
 
         // const dbr = await db.users.findOne({ where: { id: options.userId } });
         // console.log(dbr.dataValues);
@@ -18,7 +20,7 @@ module.exports = {
 
         return {
             status: status,
-            data: returned
+            data: returned[0][0]
         };
     },
 
@@ -153,7 +155,6 @@ module.exports = {
     * @param options.userId The unique identifier of the user
     * @param options.HallPasses.action required
     * @param options.HallPasses.type required
-    * @param options.HallPasses.destRoom required
     * @param options.HallPasses.originRoom required
     */
     postUserIdHallPasses: async (options) => {

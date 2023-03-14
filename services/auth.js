@@ -34,7 +34,6 @@ module.exports = {
         var user = await db.sequelize.query(sql, {raw: true});
         console.log(user);
         var user = user[0][0];
-        // var user = await con.connect(['SELECT', 'userauth', '*', 'username', options.auth.username]);
         if (!user) {
             return {
                 status: 401,
