@@ -15,7 +15,7 @@ paths:
         schema:
           $ref: "#/components/schemas/UserId"
     get:
-      summary: Read a user object
+      summary: read a user object
       security:
         - ApiKey: []
       operationId: getUserById
@@ -61,7 +61,7 @@ paths:
         schema:
           $ref: "#/components/schemas/UserId"
     get:
-      summary: Read a user hall passes
+      summary: read a user hall passes
       security:
         - ApiKey: []
       operationId: getUserPassesById
@@ -69,7 +69,7 @@ paths:
         - users
       responses:
         "200":
-          description: The user corresponding to the provided `userId`
+          description: A list of hall passes for the provided `userId`
           content:
             application/json:
               schema:
@@ -122,7 +122,7 @@ paths:
                     - endPass
       responses:
         "200":
-          description: The user corresponding to the provided `userId`
+          description: Creates a hall pass for the provided `userId`
           content:
             application/json:
               schema:
@@ -160,14 +160,14 @@ paths:
         schema:
           $ref: "#/components/schemas/UserId"
     get:
-      summary: Returns students current class
+      summary: returns students current class
       security:
         - ApiKey: []
       tags:
         - users
       responses:
         "200":
-          description: Returns students current class
+          description: Returns the current course for the provided `userId`
           content:
             application/json:
               schema:
@@ -199,7 +199,7 @@ paths:
   /crisis/get_crises:
     parameters:
       - name: getResolved
-        description: get only resolved crises
+        description: Get only resolved crises
         in: query
         schema:
           properties:
@@ -207,7 +207,7 @@ paths:
               type: boolean
               default: false
       - name: getAll
-        description: get crises
+        description: Get all crises
         in: query
         schema:
           properties:
@@ -221,7 +221,7 @@ paths:
         - crisis
       responses:
         "200":
-          description: The user corresponding to the provided `userId`
+          description: Returns the current or resolved crises for all users
           content:
             application/json:
               schema:
@@ -247,7 +247,7 @@ paths:
         schema:
           $ref: "#/components/schemas/UserId"
       - name: getResolved
-        description: get only resolved crises
+        description: Get only resolved crises
         in: query
         schema:
           properties:
@@ -255,7 +255,7 @@ paths:
               type: boolean
               default: false
       - name: getAll
-        description: get crises
+        description: Get all crises
         in: query
         schema:
           properties:
@@ -269,7 +269,7 @@ paths:
         - crisis
       responses:
         "200":
-          description: The user corresponding to the provided `userId`
+          description: Returns the current or resolved crises for the provided `userId`
           content:
             application/json:
               schema:
@@ -309,7 +309,7 @@ paths:
                     - endCrisis
       responses:
         "200":
-          description: The user corresponding to the provided `userId`
+          description: Creates a crisis for the provided `userId`
           content:
             application/json:
               schema:
@@ -326,7 +326,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /counselor/create_appointement:
+  /counselor/create_appointment:
     post:
       summary: creates an appointment
       security:
@@ -342,7 +342,7 @@ paths:
               $ref: "#/components/schemas/Appointment"
       responses:
         "200":
-          description: Successfully created a new JWT token
+          description: Creates an appointment with the provided `counselorId` for the provided `userId`
           content:
             application/json:
               schema:
@@ -375,7 +375,7 @@ paths:
     get:
       parameters:
         - name: date
-          description: get only resolved crises
+          description: Get crises by specified date
           in: query
           schema:
             properties:
@@ -384,7 +384,7 @@ paths:
                 format: date
                 default: false
         - name: timesOnly
-          description: get only resolved crises
+          description: Get time ranges only
           in: query
           schema:
             properties:
@@ -392,7 +392,7 @@ paths:
                 type: boolean
                 default: false
         - name: counselorId
-          description: get crises
+          description: Get by specified counselorId
           in: query
           schema:
             properties:
@@ -405,7 +405,7 @@ paths:
         - counselor
       responses:
         "200":
-          description: Successfully created a new JWT token
+          description: Gets all occupied appointment slots
           content:
             application/json:
               schema:
@@ -425,15 +425,11 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /counselor/get_counselor/{counselorId}:
+  /counselor/get_counselor:
     get:
       parameters:
-        - name: counselorId
-          in: path
-          required: true # lies is false
-          schema:
-            type: integer
         - name: isAvailable
+          description: Get only available counselors
           in: query
           schema:
             properties:
@@ -446,7 +442,49 @@ paths:
         - counselor
       responses:
         "200":
-          description: Successfully created a new JWT token
+          description: Returns a list of all counselors and their attributes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Counselor"
+        "400":
+          description: Bad data provided
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Unexpected server side error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /counselor/get_counselor/{counselorId}:
+    get:
+      parameters:
+        - name: counselorId
+          description: Get counselor by specified counselorId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: isAvailable
+          description: Get only available counselors
+          in: query
+          schema:
+            properties:
+              status:
+                type: boolean
+                default: false
+      summary: get counselor by Id
+      operationId: getCounselorById
+      tags:
+        - counselor
+      responses:
+        "200":
+          description: The counselor corresponding to the provided `counselorId`
           content:
             application/json:
               schema:
@@ -497,7 +535,7 @@ paths:
                   example: 1
       responses:
         "200":
-          description: Successfully created a new JWT token
+          description: Creates a walkin appointment with the provided `counselorId` for the provided `userId`
           content:
             application/json:
               schema:
@@ -526,15 +564,15 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /statistics/urgancy:
+  /statistics/urgency:
     get:
-      summary: gets a graph of crises urgancy
+      summary: gets a graph of crises urgency
       operationId: statisticsUrgancy
       tags:
         - statistics
       responses:
         "200":
-          description: gets a graph of mode of crises urgancy
+          description: Returns a frequency graph of crises urgency
           content:
             image/svg:
               schema:
@@ -561,7 +599,7 @@ paths:
         - statistics
       responses:
         "200":
-          description: gets a graph of appointment
+          description: Returns a frequency graph of appointment
           content:
             image/svg:
               schema:
@@ -582,7 +620,7 @@ paths:
                 $ref: "#/components/schemas/Error"
   /auth/login:
     post:
-      summary: creates a new JWT token
+      summary: creates a new authentication token
       operationId: createAuthToken
       tags:
         - auth
@@ -594,7 +632,7 @@ paths:
               $ref: "#/components/schemas/UserLogin"
       responses:
         "200":
-          description: Successfully created a new JWT token
+          description: Generates an authentication token for the provided `userId`
           content:
             application/json:
               schema:
