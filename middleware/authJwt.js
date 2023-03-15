@@ -5,7 +5,7 @@ verifyToken = (req, res, next) => {
     let token = req.headers["x-access-token"];
 
     if (!token) {
-        return res.status(403).send({
+        return res.status(401).send({
             message: "No token provided!"
         });
     }
@@ -27,7 +27,7 @@ verifyToken = (req, res, next) => {
             });
         }
         if (req.params.userId != decoded.id && req.body.userId != decoded.id) {
-            return res.status(401).send({
+            return res.status(403).send({
                 message: "Wrong User!"
             });
         }
