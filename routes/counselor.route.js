@@ -13,7 +13,7 @@ router.use(function (req, res, next) {
 });
 
 
-router.post('/create_appointement', [authJwt.verifyToken], async (req, res, next) => {
+router.post('/create_appointment', [authJwt.verifyToken], async (req, res, next) => {
     let options = {
     };
 

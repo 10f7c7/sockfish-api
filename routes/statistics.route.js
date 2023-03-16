@@ -25,7 +25,7 @@ router.get('/appointment', async (req, res, next) => {
     }
 });
 
-router.get('/urgancy', async (req, res, next) => {
+router.get('/urgency', async (req, res, next) => {
     let options = {
         root: path.resolve(__dirname, '../svg')
     };
