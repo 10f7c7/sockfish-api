@@ -1,8 +1,11 @@
 openapi: 3.0.0
 info:
-  version: 1.0.0
+  version: 1.4.59
   title: Sockfish
   description: Sockfish
+externalDocs:
+  description: Github documentation
+  url: https://github.com/10f7c7/sockfish-api
 servers:
   - url: https://api.10f7c7.dev:3000/api/v1
 paths:
